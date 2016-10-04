@@ -4,7 +4,7 @@
     type: 'GET',
     url: 'https://api.twitch.tv/kraken/channels/twitch',
     headers: {
-        'Client-ID': 'axjhfp777tflhy0yjb5sftsil'
+        'Client-ID': 'ida59qej09oftmvj165yc0tnhll3sxps'
     },
     success: function(data) {
         console.log(data);
@@ -19,7 +19,7 @@ function callChannels() {
     }
 }
 
-var channelData = []; //Array of response objects(channel)
+var channelData = []; //Array of response objects(channels)
 
 function fetch(channel) {
     $.ajax({
