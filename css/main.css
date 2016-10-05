@@ -1,0 +1,60 @@
+img {
+    max-width: 100%;
+}
+
+.user-cards-container, .user-stream-container, .offline-container {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.user-card, .user-stream, .offline-card {
+    border: 1px solid grey;
+    flex: 1 1 100%;
+    margin: 1rem;
+    max-width: 22rem;
+}
+
+.status {
+    min-height: 6rem;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.logo {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.logo img {
+    max-width: 8rem;
+}
+
+.display-name {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.game {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.video-control {
+    cursor: pointer;
+}
+
+.video-kill {
+    display: none;
+}
+
+@media all and (min-width: 40rem) {
+    .user-card, .user-stream, .offline-card {
+        flex: 1 1 40%;
+    }
+}
+
+@media all and (min-width: 64rem) {
+    .user-card, .user-stream, .offline-card {
+        flex: 1 1 20%;
+    }
+}
