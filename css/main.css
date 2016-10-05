@@ -1,5 +1,18 @@
+body {
+    color: #b8b5c0;
+}
+
 img {
     max-width: 100%;
+}
+
+i {
+    color: #b8b5c0;
+}
+
+a {
+    color: #6441a4;
+    text-decoration: none;
 }
 
 .user-cards-container, .user-stream-container, .offline-container {
@@ -7,13 +20,23 @@ img {
     flex-flow: row wrap;
 }
 
-.user-card, .offline-card {
-    border: 1px solid grey;
+.user-card {
+    border: 5px solid #6441a4;
+    background-color: #19171c;
+    border-radius: 10px;
     flex: 1 1 100%;
     margin: 1rem;
     max-width: 22rem;
     display: flex;
     flex-direction: column;
+    justify-content: space-around;
+}
+
+.offline-card {
+    border: 5px solid #17141f;
+    border-radius: 10px;
+    max-width: 22rem;
+    margin: 1rem;
 }
 
 .top-row {
@@ -36,6 +59,12 @@ img {
     align-items: center;
 }
 
+.player-control, .go-channel, .fave {
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+}
+
 .status {
     flex-basis: 50%;
     text-align: center;
@@ -44,6 +73,7 @@ img {
 
 .logo {
     flex-basis: 50%;
+    text-align: center;
 }
 
 iframe {
