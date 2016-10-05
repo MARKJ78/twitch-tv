@@ -69,7 +69,7 @@ function populate(response) {
     function getStream(name, streamWidth) {
         console.log(name);
         console.log(streamWidth);
-        $('#' + name).append('<div class="user-stream"><iframe src="http://player.twitch.tv/?channel={' + name + '}" width="100%" frameborder="0" scrolling="no" allowfullscreen="true"></iframe></div>');
+        $('#' + name).append('<div class="user-stream"><iframe src="https://player.twitch.tv/?channel={' + name + '}" width="100%" frameborder="0" scrolling="no" allowfullscreen="true"></iframe></div>');
     }
     if (response.stream !== null) {
         $('#videoPlay-' + response.stream.channel.display_name).click(function() {
