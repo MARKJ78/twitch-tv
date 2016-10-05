@@ -56,7 +56,7 @@ function populate(response, name) {
     ////////////////////////////////////////*/
 
     function getStream(name) {
-        $('#middle-row-' + name).html('<div id="' + name + '-user-stream" class="user-stream"><iframe src="https://player.twitch.tv/?channel={' + name + '}" width="100%" frameborder="0" scrolling="no" allowfullscreen="true"></iframe></div>');
+        $('#middle-row-' + name).html('<div id="' + name + '-user-stream" class="user-stream"><iframe src="https://player.twitch.tv/?channel={' + name + '}" autoplay="true" width="100%" frameborder="0" scrolling="no" allowfullscreen="true"></iframe></div>');
     }
 
     if (response.stream !== null) {
