@@ -7,7 +7,7 @@ img {
     flex-flow: row wrap;
 }
 
-.user-card, .user-stream, .offline-card {
+.flip-card, .user-card, .user-stream, .offline-card {
     border: 1px solid grey;
     flex: 1 1 100%;
     margin: 1rem;
@@ -26,7 +26,7 @@ img {
 }
 
 .logo img {
-    max-width: 8rem;
+    max-height: 227px
 }
 
 .display-name {
@@ -43,18 +43,14 @@ img {
     cursor: pointer;
 }
 
-.video-kill {
-    display: none;
-}
-
 @media all and (min-width: 40rem) {
-    .user-card, .user-stream, .offline-card {
+    .flip-card, .user-card, .user-stream, .offline-card {
         flex: 1 1 40%;
     }
 }
 
 @media all and (min-width: 64rem) {
-    .user-card, .user-stream, .offline-card {
+    .flip-card, .user-card, .user-stream, .offline-card {
         flex: 1 1 20%;
     }
 }
