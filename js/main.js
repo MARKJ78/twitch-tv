@@ -24,6 +24,7 @@ $(document).ready(function() {
     function callChannels() {
         for (var i = 0; i < userChannels.length; i++) {
             fetch(userChannels[i]);
+            $('.faves-list').append('<li>' + userChannels[i] + '</li>');
         }
     }
     callChannels();
@@ -40,15 +41,20 @@ Populate
 
 function populate(response, name) {
     if (response.stream !== null) {
-        $('#userCards').append('<div class="user-card" id="' + response.stream.channel.display_name + '">  <div class="top-row">    <div class="on-air-light"></div>    <div class="on-air-text">On air text</div>     <div class="game"><p>Playing:&nbsp;<b>' + response.stream.channel.game + '</b></p></div>    <div class="display-name"><a href="' + response.stream.channel.url + '">' + response.stream.channel.display_name + '</a></div>  </div>  <div class="middle-row" id="middle-row-' + response.stream.channel.display_name + '">  <div class="logo" id="logo-' + response.stream.channel.display_name + '"><img src="' + response.stream.channel.logo + '" alt="Channel Logo"></div>    <div class="status">' + response.stream.channel.status + '</div>  </div>  <div class="bottom-row">    <div class="fave"><p>Favorite</p><i class="fa fa-heart" aria-hidden="true"></i></div>    <div class="go-channel"><p>Visit Channel</p><i class="fa fa-twitch" aria-hidden="true"></i></div>    <div class="player-control">    <div id="videoPlay-' + response.stream.channel.display_name + '" class="video-play"><p>Stream</p><i class="fa fa-play" aria-hidden="true"></i></div>    <div id="videoKill-' + response.stream.channel.display_name + '" class="video-kill"><p>Stream</p><i class="fa fa-stop" aria-hidden="true"></i></div></div></div><div>');
+        $('#userCards').append('<div class="user-card" id="' + response.stream.channel.display_name + '">  <div class="top-row">     <div class="on-air-text">On air text</div>       <div class="game"><p>Playing:&nbsp;<b>' + response.stream.channel.game + '</b></p></div>    <div class="display-name"><a href="' + response.stream.channel.url + '">' + response.stream.channel.display_name + '</a></div>  </div>  <div class="middle-row" id="middle-row-' + response.stream.channel.display_name + '">  <div class="logo" id="logo-' + response.stream.channel.display_name + '"><img src="' + response.stream.channel.logo + '" alt="Channel Logo"></div>    <div class="status">' + response.stream.channel.status + '</div>  </div>  <div class="bottom-row">    <div class="fave"><p>Favorite</p><i class="fa fa-heart" aria-hidden="true"></i></div>    <div class="go-channel"><p>Visit Channel</p><i class="fa fa-twitch" aria-hidden="true"></i></div>    <div class="player-control">    <div id="videoPlay-' + response.stream.channel.display_name + '" class="video-play"><p>Stream</p><i class="fa fa-play" aria-hidden="true"></i></div>    <div id="videoKill-' + response.stream.channel.display_name + '" class="video-kill"><p>Stream</p><i class="fa fa-stop" aria-hidden="true"></i></div></div></div><div>');
         $('#videoKill-' + response.stream.channel.display_name).css({
             'display': 'none'
         });
+        $('.on-air-text').html(
+            'STREAMING'
+        );
+        $('.faves-list').append('<li class="online">' + response.stream.channel.display_name + '</li>');
     } else {
         var channel = response._links.channel;
         var urlArray = channel.split('/');
         var urlName = urlArray[urlArray.length - 1];
         $('#offlineCards').append('<div class="offline-card"><h2>' + urlName + '&nbsp; is OFFLINE</h2><div class="link"><a href="https://www.twitch.tv/' + urlName + '">Go To Channel&nbsp;<i class="fa fa-external-link fa-lg" aria-hidden="true"></i></a></div>');
+        $('.faves-list').append('<li class="offline">' + urlName + '</li>');
     }
 
     /*////////////////////////////////////////
@@ -56,7 +62,7 @@ function populate(response, name) {
     ////////////////////////////////////////*/
 
     function getStream(name) {
-        $('#middle-row-' + name).html('<div id="' + name + '-user-stream" class="user-stream"><iframe src="https://player.twitch.tv/?channel={' + name + '}" autoplay="true" width="100%" frameborder="0" scrolling="no" allowfullscreen="true"></iframe></div>');
+        $('#middle-row-' + name).html('<div id="' + name + '-user-stream" class="user-stream"><iframe src="https://player.twitch.tv/?channel={' + name + '}" width="100%" frameborder="0" scrolling="no" allowfullscreen="true"></iframe></div>');
     }
 
     if (response.stream !== null) {
