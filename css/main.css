@@ -2,7 +2,7 @@
     color: #17141f;
     background-color: #fff;
     position: relative;
-    left: 200px;
+    left: 202px;
     width: calc(100vw - 200px);
     font-family: 'Lato', sans-serif;
 }
@@ -26,17 +26,17 @@ hr {
     background-image: linear-gradient(to right, rgba(0, 0, 0, 0), #6441a4, rgba(0, 0, 0, 0));
 }
 
-.faves-list {
+#faves-list {
     margin-left: 0;
 }
 
-.faves-list li {
+#faves-list li {
     list-style: none;
     padding: 0.5rem;
     padding-left: 0;
 }
 
-.faves-list li:before {
+#faves-list li:before {
     content: "\f007";
     font-family: FontAwesome;
     color: #898395;
@@ -45,12 +45,12 @@ hr {
     width: 1.3rem;
 }
 
-.faves-list li:hover {
+#faves-list li:hover {
     background-color: #201c2b;
     cursor: pointer;
 }
 
-.faves-list a {
+#faves-list a {
     color: #898395;
 }
 
@@ -61,23 +61,32 @@ hr {
     background-color: #17141f;
     color: #898395;
     font-family: 'Lato', sans-serif;
+    border-right: 2px solid #6441a4;
 }
 
 .channel-panel i {
     color: #898395;
 }
 
-.faves-list li.online::before {
+#faves-list li.a-online::before {
     color: #27ae60;
+    font-size: 1rem;
 }
 
-.faves-list li.offline::before {
-    color: #d35400;
+#faves-list li.b-offline::before {
+    color: #f39c12;
+    font-size: 1rem;
+}
+
+#faves-list li.c-not-found::before {
+    color: #c0392b;
+    font-size: 1rem;
 }
 
 .menu-logo {
     font-family: 'Ranchers', cursive;
     font-size: 2rem;
+    text-align: center;
 }
 
 .menu-heading {
