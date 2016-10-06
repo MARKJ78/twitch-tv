@@ -4,6 +4,12 @@ $(document).ready(function() {
     /*////////////////////////////////////////
     Call API
     ////////////////////////////////////////*/
+    var userChannels = ["garry_Glitter", "ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas", "brunofin", "comster404"];
+
+    Cookies.set('PanelFavorites', userChannels);
+    var getCookie = Cookies.getJSON('PanelFavorites');
+    console.log(getCookie);
+
     function fetchFaves(channel) {
         var user = channel;
         $.ajax({
@@ -85,11 +91,6 @@ function populateFaves(response, name) {
         if (i != -1) {
             userChannels.splice(i, 1);
             $('#fave-' + name).remove();
-            var sendToCookie = JSON.stringify(userChannels);
-            console.log(sendToCookie + "1st");
-            Cookies.set('ChannelPanelFavorites', sendToCookie);
-
-            console.log(Cookies.get('ChannelPanelFavorites' + '2nd'));
 
 
             /*$.cookie('ChannelPanelFavorites', sendToCookie);
