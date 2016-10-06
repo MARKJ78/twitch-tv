@@ -26,6 +26,34 @@ hr {
     background-image: linear-gradient(to right, rgba(0, 0, 0, 0), #6441a4, rgba(0, 0, 0, 0));
 }
 
+.faves-list {
+    margin-left: 0;
+}
+
+.faves-list li {
+    list-style: none;
+    padding: 0.5rem;
+    padding-left: 0;
+}
+
+.faves-list li:before {
+    content: "\f007";
+    font-family: FontAwesome;
+    color: #898395;
+    display: inline-block;
+    margin-left: -1.3rem;
+    width: 1.3rem;
+}
+
+.faves-list li:hover {
+    background-color: #201c2b;
+    cursor: pointer;
+}
+
+.faves-list a {
+    color: #898395;
+}
+
 .channel-panel {
     height: 100vh;
     width: 200px;
@@ -39,26 +67,21 @@ hr {
     color: #898395;
 }
 
-.channel-panel ul {
-    margin: 1rem;
+.faves-list li.online::before {
+    color: #27ae60;
 }
 
-.channel-panel li {
-    list-style: none;
-    padding: .5rem;
-}
-
-.online {
-    color: green;
-}
-
-.offline {
-    color: orange;
+.faves-list li.offline::before {
+    color: #d35400;
 }
 
 .menu-logo {
     font-family: 'Ranchers', cursive;
     font-size: 2rem;
+}
+
+.menu-heading {
+    margin-left: 1.3rem;
 }
 
 .user-cards-container, .user-stream-container, .offline-container {
@@ -99,7 +122,7 @@ hr {
 }
 
 .on-air-text {
-    background-color: #24db39;
+    background-color: #27ae60;
     height: 100%;
     width: 100%;
 }
