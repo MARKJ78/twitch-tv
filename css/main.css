@@ -189,6 +189,10 @@ iframe {
     cursor: pointer;
 }
 
+.heart {
+    cursor: pointer;
+}
+
 @media all and (min-width: 40rem) {
     .user-card, .offline-card {
         flex: 1 1 40%;

@@ -1,0 +1,27 @@
+<!doctype html> '
+
+<div class="user-card" id="' + path.display_name + '">', '
+    <div class="top-row">', '
+        <div class="on-air-text">On air text</div>', '
+        <div class="game">
+            <p>Playing:&nbsp;<b>' + path.game + '</b></p>', ' </div>', '
+        <div class="display-name"><a href="' + path.url + '">' + path.display_name + '</a></div>', ' </div>', '
+    <div class="middle-row" id="middle-row-' + path.display_name + '">', '
+        <div class="logo" id="logo-' + path.display_name + '"><img src="' + path.logo + '" alt="Channel Logo"></div>', '
+        <div class="status">' + path.status + '</div>', ' </div>', '
+    <div class="bottom-row">', '
+        <div class="heart">
+            <p>Favorite</p><i class="fa fa-heart" aria-hidden="true"></i></div>', '
+        <div class="go-channel">
+            <p>Visit Channel</p><i class="fa fa-twitch" aria-hidden="true"></i></div>', '
+        <div class="player-control">', '
+            <div id="videoPlay-' + path.display_name + '" class="video-play">
+                <p>Stream</p><i class="fa fa-play" aria-hidden="true"></i></div>', '
+            <div id="videoKill-' + path.display_name + '" class="video-kill">
+                <p>Stream</p><i class="fa fa-stop" aria-hidden="true"></i></div>', ' </div>', ' </div>', '
+</div>' '
+
+
+<div id="' + path.display_name + '-user-stream" class="user-stream">', '
+    <iframe src="https://player.twitch.tv/?channel={' + path.display_name + '}" width="100%" frameborder="0" scrolling="no" allowfullscreen="true"></iframe>', '
+</div>'
