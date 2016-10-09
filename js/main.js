@@ -1,6 +1,6 @@
 var userChannels = [];
 if (typeof Cookies('PanelFavorites') === 'undefined') {
-    userChannels = ["ShoRyuKen_this", "Bandy_Coot", "crazycanuck1985", "Sensible_Socks", "ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas"];
+    userChannels = ["ShoRyuKen_this", "Bandy_Coot", "crazycanuck1985", "Sensible_Socks", "ESL_SC2", "OgamingSC2", "DJTruthsayer", "cretetion", "freecodecamp", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas"];
     Cookies.set('PanelFavorites', userChannels);
     console.log(userChannels + " From Array");
 } else {
@@ -101,16 +101,15 @@ function buildCards(path, response) {
         '<div class="user-card" id="' + path.channel.display_name + '">',
         '  <div class="top-row" id="top-row-' + path.channel.display_name + '"><img src="' + path.preview.medium + '" alt="Channel preview picture"></div>',
         '    <div class="info-row" id="info-row-' + path.channel.display_name + '">',
-        '      <div class="game"><p>' + path.channel.display_name + '&nbsp;<i class="fa fa-gamepad fa-lg" aria-hidden="true"></i>&nbsp;' + path.game + '</p></div>',
+        '      <div class="game"><p>' + path.channel.display_name + '&nbsp;</p><p><i class="fa fa-gamepad fa-lg" aria-hidden="true"></i></p><p>&nbsp;' + path.game + '</p></div>',
         '    </div>',
         '  <div class="middle-row" id="middle-row-' + path.channel.display_name + '">',
         '    <div class="status">' + path.channel.status + '</div>',
         '    <div class="stream-info">',
         '      <ul>',
-        '        <li>Viewers: ' + path.viewers + '</li>',
-        '        <li>FPS: ' + Math.round(path.average_fps) + '</li>',
-        '        <li>Resolution: ' + path.video_height + 'p</li>',
-        '        <li>Language: ' + path.channel.language + '</li>',
+        '        <li>' + path.viewers + ' viewers</li>',
+        '        <li>' + Math.round(path.average_fps) + ' FPS</li>',
+        '        <li>' + path.video_height + 'p, ' + path.channel.language + '</li>',
         '      </ul>',
         '    </div>',
         '   </div>',
