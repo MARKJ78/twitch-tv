@@ -1,6 +1,6 @@
 var userChannels = [];
 if (typeof Cookies('PanelFavorites') === 'undefined') {
-    userChannels = ["Jimmy_Savelle", "brunofin", "comster404", "ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas"];
+    userChannels = ["ShoRyuKen_this", "Bandy_Coot", "crazycanuck1985", "Sensible_Socks", "ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas"];
     Cookies.set('PanelFavorites', userChannels);
     console.log(userChannels + " From Array");
 } else {
@@ -18,20 +18,21 @@ function fetch(prefix, channel) {
             'Client-ID': 'a59qej09oftmvj165yc0tnhll3sxps'
         },
         success: function(response) {
+            console.log(response);
+            console.log('response in fetch');
             var path;
             if (response.hasOwnProperty('stream') && (response.stream !== null)) {
                 path = response.stream.channel;
-                console.log('is Not Array in fetch');
                 parse(path, response);
             } else if (response.hasOwnProperty('stream') && (response.stream === null)) {
                 parse(path, response);
-            } else if (response.hasOwnProperty('channels') && (response.channels.length !== 0)) {
-                for (var i = 0; i < response.channels.length; i++) {
-                    path = response.channels[i];
-                    console.log(response);
-                    console.log('response in fetch');
+            } else if (response.hasOwnProperty('streams') && (response.streams.length !== 0)) {
+                for (var i = 0; i < response.streams.length; i++) {
+                    path = response.streams[i].channel;
                     parse(path, response);
                 }
+            } else if (response.hasOwnProperty('streams') && (response.streams.length === 0)) {
+                alert('Nothing Found for that search');
             }
         },
         error: function(error) {
@@ -47,6 +48,28 @@ function callFaveChannels() {
         $('#faves-list').append('<li id="fave-' + userChannels[i] + '"><a class="link-' + userChannels[i] + '" href="#">' + userChannels[i] + '</a></li>');
     }
 }
+
+//go button search
+$('#search-channels-btn').click(function() {
+    var term = $('#searchTerm').val();
+    var prefix = 'search/streams?q=';
+    if (term !== '') {
+        fetch(prefix, term);
+        console.log('search clicked');
+    }
+});
+//enter/return key search
+$('#searchTerm').keyup(function(event) {
+    var term = $('#searchTerm').val();
+    var prefix = 'search/streams?q=';
+    if (event.keyCode == 13) {
+        if (term !== '') {
+            fetch(prefix, term);
+            console.log('search entered');
+        }
+    }
+});
+
 
 function removeFromFaves(name) {
     var i = userChannels.indexOf(name);
@@ -72,26 +95,6 @@ function addToFaves(name) {
         alert('You already have ' + name + ' as a favorite'); //test
     }
 }
-//go button search
-$('#search-channels-btn').click(function() {
-    var term = $('#searchTerm').val();
-    var prefix = 'search/channels?q=';
-    if (term !== '') {
-        fetch(prefix, term);
-        console.log('search clicked');
-    }
-});
-//enter/return key search
-$('#searchTerm').keyup(function(event) {
-    var term = $('#searchTerm').val();
-    var prefix = 'search/channels?q=';
-    if (event.keyCode == 13) {
-        if (term !== '') {
-            fetch(prefix, term);
-            console.log('search entered');
-        }
-    }
-});
 
 function buildCards(path, response) {
     $('#userCards').append([
@@ -191,6 +194,7 @@ function parse(path, response) {
         buildCards(path, response);
     }
 }
+
 /*////////////////////////////////////////
 Sort faves list, online first function
 ////////////////////////////////////////*/

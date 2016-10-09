@@ -273,15 +273,9 @@ function fetchSearch(term) {
         type: 'GET',
         url: 'https://api.twitch.tv/kraken/search/channels?q=' + term,
         headers: {
-            'Client-ID': 'a59qej09oftmvj165yc0tnhll3sxps'
-        },
-        success: function(data) {
-            populateSearch(data);
-
-        },
-        error: function(error) {
-            console.log('Not Found');
-
+            'Client-ID': 'a59qej09oftmvj165yc0tnhll3sxps'},
+        success: function(data) {populateSearch(data);},
+        error: function(error) { onsole.log('Not Found');
         },
     });
 

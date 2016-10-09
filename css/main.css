@@ -1,10 +1,11 @@
 .page-container {
     color: #17141f;
-    background-color: #fff;
+    background-color: #f5f5f6;
     position: relative;
     left: 202px;
     width: calc(100vw - 200px);
     font-family: 'Lato', sans-serif;
+    min-height: 100vh;
 }
 
 img {
@@ -93,21 +94,24 @@ hr {
     margin-left: 1.3rem;
 }
 
-.user-cards-container, .user-stream-container, .offline-container {
+.search-box {
+    background-color: #f5f5f6;
+}
+
+.search-cards-container, .user-cards-container, .user-stream-container, .offline-container {
     display: flex;
     flex-flow: row wrap;
 }
 
 .user-card {
-    border: 5px solid #6441a4;
-    background-color: #efeef1;
-    border-radius: 10px;
+    background-color: #fff;
     flex: 1 1 100%;
     margin: 1rem;
     max-width: 22rem;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 }
 
 .offline-card {
