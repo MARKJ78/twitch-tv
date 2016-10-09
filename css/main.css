@@ -58,6 +58,7 @@ hr {
     height: 100vh;
     width: 200px;
     position: fixed;
+    left: -200px;
     background-color: #17141f;
     color: #898395;
     font-family: 'Lato', sans-serif;
@@ -99,8 +100,8 @@ hr {
 
 .search-cards-container, .user-cards-container {
     position: relative;
-    left: 200px;
-    width: calc(100vw - 200px);
+    /*left: 200px;
+    width: calc(100vw - 200px);*/
     display: flex;
     flex-flow: row wrap;
     justify-content: flex-start;
@@ -117,7 +118,7 @@ hr {
     font-size: .8rem;
     margin: 1rem;
     width: 320px;
-    height: 320px;
+    height: 318px;
     display: flex;
     flex-direction: column;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
