@@ -22,13 +22,13 @@ function fetch(prefix, channel) {
             console.log('response in fetch');
             var path;
             if (response.hasOwnProperty('stream') && (response.stream !== null)) {
-                path = response.stream.channel;
+                path = response.stream;
                 parse(path, response);
             } else if (response.hasOwnProperty('stream') && (response.stream === null)) {
                 parse(path, response);
             } else if (response.hasOwnProperty('streams') && (response.streams.length !== 0)) {
                 for (var i = 0; i < response.streams.length; i++) {
-                    path = response.streams[i].channel;
+                    path = response.streams[i];
                     parse(path, response);
                 }
             } else if (response.hasOwnProperty('streams') && (response.streams.length === 0)) {
@@ -98,28 +98,33 @@ function addToFaves(name) {
 
 function buildCards(path, response) {
     $('#userCards').append([
-        '<div class="user-card" id="' + path.display_name + '">',
-        '    <div class="top-row">',
-        '        <div class="on-air-text">On air text</div>',
-        '        <div class="game"><p>Playing:&nbsp;<b>' + path.game + '</b></p>',
-        '        </div>',
-        '        <div class="display-name"><a href="' + path.url + '">' + path.display_name + '</a></div>',
+        '<div class="user-card" id="' + path.channel.display_name + '">',
+        '  <div class="top-row" id="top-row-' + path.channel.display_name + '"><img src="' + path.preview.medium + '" alt="Channel preview picture"></div>',
+        '    <div class="info-row" id="info-row-' + path.channel.display_name + '">',
+        '      <div class="game"><p>' + path.channel.display_name + '&nbsp;<i class="fa fa-gamepad fa-lg" aria-hidden="true"></i>&nbsp;' + path.game + '</p></div>',
         '    </div>',
-        '    <div class="middle-row" id="middle-row-' + path.display_name + '">',
-        '        <div class="logo" id="logo-' + path.display_name + '"><img src="' + path.logo + '" alt="Channel Logo"></div>',
-        '        <div class="status">' + path.status + '</div>',
+        '  <div class="middle-row" id="middle-row-' + path.channel.display_name + '">',
+        '    <div class="status">' + path.channel.status + '</div>',
+        '    <div class="stream-info">',
+        '      <ul>',
+        '        <li>Viewers: ' + path.viewers + '</li>',
+        '        <li>FPS: ' + Math.round(path.average_fps) + '</li>',
+        '        <li>Resolution: ' + path.video_height + 'p</li>',
+        '        <li>Language: ' + path.channel.language + '</li>',
+        '      </ul>',
         '    </div>',
+        '   </div>',
         '    <div class="bottom-row">',
-        '        <div id="heart-' + path.display_name + '"><p>Favorite</p><i class="fa fa-heart" aria-hidden="true"></i></div>',
-        '        <div class="go-channel"><p>Visit Channel</p><i class="fa fa-twitch" aria-hidden="true"></i></div>',
-        '        <div class="player-control">',
-        '            <div id="videoPlay-' + path.display_name + '" class="video-play"><p>Stream</p><i class="fa fa-play" aria-hidden="true"></i></div>',
-        '            <div id="videoKill-' + path.display_name + '" class="video-kill"><p>Stream</p><i class="fa fa-stop" aria-hidden="true"></i></div>',
-        '        </div>',
+        '      <div id="heart-' + path.channel.display_name + '"><i class="fa fa-heart" aria-hidden="true"></i></div>',
+        '      <div class="go-channel"><a href="' + path.channel.url + '"><i class="fa fa-twitch" aria-hidden="true"></i></a></div>',
+        '      <div class="player-control">',
+        '        <div id="videoPlay-' + path.channel.display_name + '" class="video-play"><i class="fa fa-play" aria-hidden="true"></i></div>',
+        '        <div id="videoKill-' + path.channel.display_name + '" class="video-kill"><i class="fa fa-stop" aria-hidden="true"></i></div>',
+        '      </div>',
         '    </div>',
         '</div>'
     ].join('\n'));
-    $('#videoKill-' + path.display_name).css({
+    $('#videoKill-' + path.channel.display_name).css({
         'display': 'none'
     });
     $('.on-air-text').html(
@@ -131,7 +136,7 @@ function buildCards(path, response) {
         console.log(userChannels + " fave-list li c-not-response click");
     });
 
-    $('#heart-' + path.display_name).click(function() {
+    $('#heart-' + path.channel.display_name).click(function() {
         var addName = $(this).parent().parent().attr('id');
         addToFaves(addName);
         /*console.log($(this).parent().parent().attr('id') + ' is now a favorite.');*/
@@ -139,31 +144,30 @@ function buildCards(path, response) {
     /*////////////////////////////////////////
     Embeded video function
     ////////////////////////////////////////*/
-    $('#videoPlay-' + path.display_name).click(function() {
-        console.log('VIDEO PLAY ' + path.display_name);
-        $('#middle-row-' + path.display_name).html([
-            '<div id="' + path.display_name + '-user-stream" class="user-stream">',
-            '   <iframe src="https://player.twitch.tv/?channel={' + path.display_name + '}" width="100%" frameborder="0" scrolling="no" allowfullscreen="true"></iframe>',
+    $('#videoPlay-' + path.channel.display_name).click(function() {
+        console.log('VIDEO PLAY ' + path.channel.display_name);
+        $('#top-row-' + path.channel.display_name).html([
+            '<div id="' + path.channel.display_name + '-user-stream" class="user-stream">',
+            '   <iframe src="https://player.twitch.tv/?channel={' + path.channel.display_name + '}" width="320" height="180" frameborder="0" scrolling="no" allowfullscreen="true"></iframe>',
             '</div>'
         ].join('\n'));
         $(this).css({
             'display': 'none'
         });
-        $('#videoKill-' + path.display_name).css({
+        $('#videoKill-' + path.channel.display_name).css({
             'display': 'block'
         });
     });
-    $('#videoKill-' + path.display_name).click(function() {
-        console.log('VIDEO KILL ' + path.display_name);
-        $('#' + path.thisName + '-user-stream').remove();
-        $('#middle-row-' + path.display_name).html([
-            '        <div class="logo" id="logo-' + path.display_name + '"><img src="' + path.logo + '" alt="Channel Logo"></div>',
-            '        <div class="status">' + path.status + '</div>',
+    $('#videoKill-' + path.channel.display_name).click(function() {
+        console.log('VIDEO KILL ' + path.channel.display_name);
+        $('#' + path.channel.thisName + '-user-stream').remove();
+        $('#top-row-' + path.channel.display_name).html([
+            '<img src="' + path.preview.medium + '" alt="Channel preview picture">',
         ].join('\n'));
         $(this).css({
             'display': 'none'
         });
-        $('#videoPlay-' + path.display_name).css({
+        $('#videoPlay-' + path.channel.display_name).css({
             'display': 'block'
         });
     });
@@ -178,8 +182,8 @@ function parse(path, response) {
     /*console.log(path);
     console.log('in parse');*/
     if (response.hasOwnProperty('stream') && (response.stream !== null)) {
-        $('.link-' + path.display_name).attr("href", "https://www.twitch.tv/" + path.display_name);
-        $('#fave-' + path.display_name).addClass('a-online');
+        $('.link-' + path.channel.display_name).attr("href", "https://www.twitch.tv/" + path.channel.display_name);
+        $('#fave-' + path.channel.display_name).addClass('a-online');
         buildCards(path, response);
         sort();
     } else if (response.hasOwnProperty('stream') && (response.stream === null)) {
