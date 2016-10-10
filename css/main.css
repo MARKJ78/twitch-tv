@@ -1,14 +1,31 @@
-.page-container {
-    color: #17141f;
-    background-color: #f5f5f6;
-    position: relative;
-    font-family: 'Lato', sans-serif;
-    display: flex;
-    flex-direction: column;
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
 }
 
 img {
     max-width: 100%;
+}
+
+h1, h2, h3 {
+    font-family: 'Audiowide', cursive;
+    text-align: left;
+    color: #898395;
+    padding-left: .5rem;
+}
+
+.section-title {
+    margin: 0;
+    padding: 0;
+    margin-left: .5rem;
+    text-align: left;
+    color: #898395;
+    flex-basis: 95%;
+}
+
+.menu-heading {
+    margin-left: 1rem;
 }
 
 i {
@@ -16,8 +33,12 @@ i {
 }
 
 a {
-    color: #6441a4;
+    color: #898395;
     text-decoration: none;
+}
+
+a:hover {
+    color: #6441a4;
 }
 
 hr {
@@ -25,6 +46,39 @@ hr {
     height: 1px;
     background-image: linear-gradient(to right, rgba(0, 0, 0, 0), #6441a4, rgba(0, 0, 0, 0));
 }
+
+.page-container {
+    color: #17141f;
+    background-color: #f5f5f6;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+}
+
+.cards-panel {
+    position: relative;
+    left: 202px;
+    width: calc(100vw - 202px);
+}
+
+.channel-panel {
+    height: 100vh;
+    width: 200px;
+    position: fixed;
+    /*left: -200px;*/
+    background-color: #17141f;
+    color: #898395;
+    border-right: 2px solid #6441a4;
+}
+
+.menu-logo {
+    text-align: center;
+    padding: 0;
+}
+
+@media all and (max-width) {}
 
 #faves-list {
     margin-left: 0;
@@ -54,21 +108,6 @@ hr {
     color: #898395;
 }
 
-.channel-panel {
-    height: 100vh;
-    width: 200px;
-    position: fixed;
-    /*left: -200px;*/
-    background-color: #17141f;
-    color: #898395;
-    font-family: 'Lato', sans-serif;
-    border-right: 2px solid #6441a4;
-}
-
-.channel-panel i {
-    color: #898395;
-}
-
 #faves-list li.a-online::before {
     color: #27ae60;
     font-size: 1rem;
@@ -84,61 +123,41 @@ hr {
     font-size: 1rem;
 }
 
-.menu-logo {
-    font-family: 'Ranchers', cursive;
-    font-size: 2rem;
-    text-align: center;
-}
-
-.menu-heading {
-    margin-left: 1.3rem;
+.search-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
 }
 
 .search-box {
     background-color: #f5f5f6;
+    text-align: center;
 }
 
 .search-cards-container, .user-cards-container, .featured-container {
-    position: relative;
-    left: 200px;
-    width: calc(100vw - 200px);
     display: flex;
     flex-flow: row wrap;
     justify-content: flex-start;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+    padding-bottom: 2rem;
 }
 
 .search-cards-container {
     display: none;
 }
 
-.section-title {
-    text-align: center;
-    width: 100%;
-}
-
 .user-card {
     background-color: #fff;
     color: #898395;
     font-size: .8rem;
-    margin: 1rem;
+    margin: .5rem;
     width: 320px;
     height: 318px;
     display: flex;
     flex-direction: column;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-}
-
-.offline-card {
-    border: 5px solid #19171c;
-    color: #19171c;
-    border-radius: 10px;
-    max-width: 22rem;
-    margin: 1rem;
-    background-color: #b8b5c0;
-}
-
-.offline-card i {
-    color: #19171c;
 }
 
 .top-row {
@@ -148,20 +167,23 @@ hr {
     padding: 0;
 }
 
-.game {
+.info-row {
     background-color: #17141f;
     display: inline-flex;
-    width: 100%;
-    justify-content: space-around;
+    justify-content: center;
+    padding: .5rem;
+    font-size: 1rem;
 }
 
-.game a, .game p {
+.game {
+    padding-left: 1rem;
+}
+
+.go-channel a {
     vertical-align: middle;
     margin: 0;
     padding: 0;
     font-size: 1rem;
-    padding: .5rem;
-    color: #898395;
 }
 
 .middle-row {
@@ -171,29 +193,51 @@ hr {
     align-items: center;
 }
 
+.status {
+    flex: 2 0;
+    padding: .25rem;
+    word-wrap: break-word;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.stream-info ul {
+    padding-left: 0;
+    list-style: none;
+    border-left: 1px solid #898395;
+}
+
+.stream-info ul li {
+    padding: .1rem .5rem;
+}
+
 .bottom-row {
     display: inline-flex;
     justify-content: space-around;
     align-items: center;
     background-color: #17141f;
+    padding: .5rem;
 }
 
 .player-control, .go-channel, .fave {
     justify-content: space-around;
     align-items: center;
     text-align: center;
-    padding: .75rem;
 }
 
-.status {
-    flex-basis: 50%;
-    text-align: center;
-    vertical-align: middle;
+.fa-heart:hover {
+    color: #6441a4;
+    cursor: pointer;
 }
 
-.logo {
-    flex-basis: 50%;
-    text-align: center;
+.fa-play {
+    color: #27ae60;
+    cursor: pointer;
+}
+
+.fa-stop {
+    color: #c0392b;
+    cursor: pointer;
 }
 
 iframe {
@@ -201,21 +245,9 @@ iframe {
     padding: 0;
 }
 
-.logo img {
-    height: 150px
-}
-
 .display-name {
     text-align: center;
     vertical-align: middle;
-}
-
-.video-control {
-    cursor: pointer;
-}
-
-.heart {
-    cursor: pointer;
 }
 
 
