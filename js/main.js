@@ -10,7 +10,7 @@ if (typeof Cookies('PanelFavorites') === 'undefined') {
 /*////////////////////////////////////////
 Call API
 ////////////////////////////////////////*/
-function fetch(prefix, channel) {
+function fetch(display, prefix, channel) {
     $.ajax({
         type: 'GET',
         url: 'https://api.twitch.tv/kraken/' + prefix + channel,
@@ -23,13 +23,18 @@ function fetch(prefix, channel) {
             var path;
             if (response.hasOwnProperty('stream') && (response.stream !== null)) {
                 path = response.stream;
-                parse(path, response);
+                parse(display, path, response);
             } else if (response.hasOwnProperty('stream') && (response.stream === null)) {
-                parse(path, response);
+                parse(display, path, response);
+              } else if (response.hasOwnProperty('featured') && (response.featured.length !== 0)) {
+                  for (var i = 0; i < response.featured.length; i++) {
+                      path = response.featured[i].stream;
+                      parse(display, path, response);
+                  }
             } else if (response.hasOwnProperty('streams') && (response.streams.length !== 0)) {
-                for (var i = 0; i < response.streams.length; i++) {
-                    path = response.streams[i];
-                    parse(path, response);
+                for (var j = 0; j < response.streams.length; j++) {
+                    path = response.streams[j];
+                    parse(display, path, response);
                 }
             } else if (response.hasOwnProperty('streams') && (response.streams.length === 0)) {
                 alert('Nothing Found for that search');
@@ -40,21 +45,37 @@ function fetch(prefix, channel) {
         },
     });
 }
+////Function called to fill twitch featured channels on load
+function callFeaturedChannels() {
+    var display = '.featured-container';
+    var prefix = 'streams/';
+    var channel = 'featured?limit=4';
+    fetch(display, prefix, channel);
+}
+
+
 ////Function called to fill faves on load
 function callFaveChannels() {
     var prefix = 'streams/';
+    var display = '.user-cards-container';
     for (var i = 0; i < userChannels.length; i++) {
-        fetch(prefix, userChannels[i]);
+        fetch(display, prefix, userChannels[i]);
         $('#faves-list').append('<li id="fave-' + userChannels[i] + '"><a class="link-' + userChannels[i] + '" href="#">' + userChannels[i] + '</a></li>');
     }
+    callFeaturedChannels();
 }
+
 
 //go button search
 $('#search-channels-btn').click(function() {
     var term = $('#searchTerm').val();
     var prefix = 'search/streams?q=';
+    var display = '.search-cards-container';
     if (term !== '') {
-        fetch(prefix, term);
+        $('.search-cards-container').css({
+            'display': 'flex'
+        });
+        fetch(display, prefix, term);
         console.log('search clicked');
     }
 });
@@ -62,9 +83,13 @@ $('#search-channels-btn').click(function() {
 $('#searchTerm').keyup(function(event) {
     var term = $('#searchTerm').val();
     var prefix = 'search/streams?q=';
+    var display = '.search-cards-container';
     if (event.keyCode == 13) {
         if (term !== '') {
-            fetch(prefix, term);
+            $('.search-cards-container').css({
+                'display': 'flex'
+            });
+            fetch(display, prefix, term);
             console.log('search entered');
         }
     }
@@ -96,8 +121,8 @@ function addToFaves(name) {
     }
 }
 
-function buildCards(path, response) {
-    $('#userCards').append([
+function buildCards(display, path, response) {
+    $(display).append([
         '<div class="user-card" id="' + path.channel.display_name + '">',
         '  <div class="top-row" id="top-row-' + path.channel.display_name + '"><img src="' + path.preview.medium + '" alt="Channel preview picture"></div>',
         '    <div class="info-row" id="info-row-' + path.channel.display_name + '">',
@@ -177,13 +202,13 @@ function buildCards(path, response) {
 Populate page
 
 ////////////////////////////////////////*/
-function parse(path, response) {
+function parse(display, path, response) {
     /*console.log(path);
     console.log('in parse');*/
     if (response.hasOwnProperty('stream') && (response.stream !== null)) {
         $('.link-' + path.channel.display_name).attr("href", "https://www.twitch.tv/" + path.channel.display_name);
         $('#fave-' + path.channel.display_name).addClass('a-online');
-        buildCards(path, response);
+        buildCards(display, path, response);
         sort();
     } else if (response.hasOwnProperty('stream') && (response.stream === null)) {
         var channel = response._links.channel;
@@ -194,7 +219,7 @@ function parse(path, response) {
         sort();
         /*$('#offlineCards').append('<div class="offline-card"><h2>' + urlName + '&nbsp; is OFFLINE</h2><div class="link"><a href="https://www.twitch.tv/' + urlName + '">Go To Channel&nbsp;<i class="fa fa-external-link fa-lg" aria-hidden="true"></i></a></div>');*/
     } else {
-        buildCards(path, response);
+        buildCards(display, path, response);
     }
 }
 
