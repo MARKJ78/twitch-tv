@@ -1,50 +1,20 @@
 var userChannels = [];
 if (typeof Cookies('PanelFavorites') === 'undefined') {
-    userChannels = ["ShoRyuKen_this", "Bandy_Coot", "Sensible_Socks", "ESL_SC2", "OgamingSC2", "DJTruthsayer", "Crazycanuck1985", "Replicator_", "cretetion", "freecodecamp", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas"];
+    userChannels = ["shoryuken_this", "bandy_coot", "sensible_socks", "esl_sc2", "ogamingsc2", "djtruthsayer", "crazycanuck1985", "replicator_", "cretetion", "freecodecamp", "storbeck", "habathcx", "robotcaleb", "noobs2ninjas"];
     Cookies.set('PanelFavorites', userChannels);
     console.log("Favorites loaded from defaults");
 } else {
     userChannels = Cookies.getJSON('PanelFavorites');
     console.log("Favorites loaded from cookies");
 }
-/**
- * detect IE
- * returns version of IE or false, if browser is not Internet Explorer
- * Thanks stack overflow
- */
 
-/*function detectIE() {
-    var ua = window.navigator.userAgent;
-    var msie = ua.indexOf('MSIE ');
-    if (msie > 0) {
-        // IE 10 or older => return version number
-        return (ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
-    }
-    var trident = ua.indexOf('Trident/');
-    if (trident > 0) {
-        // IE 11 => return version number
-        var rv = ua.indexOf('rv:');
-        return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
-    }
-    var edge = ua.indexOf('Edge/');
-    if (edge > 0) {
-        // Edge (IE 12+) => return version number
-        return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
-    }
-    // other browser
-    return false;
-}
-
-var isIE = detectIE();*/
-
-//////////////////////////////////////////////////////////////////////////////////////
 
 
 /*////////////////////////////////////////
 Call API
 ////////////////////////////////////////*/
 
-function ieRequest(url, channel) {
+function request(url, channel) {
     return new Promise(function(resolve) {
         var rawData, data;
         var request = new XMLHttpRequest();
@@ -63,30 +33,8 @@ function ieRequest(url, channel) {
 }
 
 function fetch(displayIn, url, channel) {
-    /*if (isIE === false){
-      $.ajax({
-          type: 'GET',
-          url: 'https://api.twitch.tv/kraken/' + prefix + channel,
-          headers: {
-              'Client-ID': 'a59qej09oftmvj165yc0tnhll3sxps'
-          },
-          success: function(response) {
-              /*  console.log(response);
-                console.log('response in fetch');*/
-    /*parse(displayIn, response);
-        },
-        error: function(error) {
-            $('#fave-' + channel).addClass('c-not-found');
-        },
-    });
-} else {*/
-    /*var clientID = '?client_id=a59qej09oftmvj165yc0tnhll3sxps';
-    var ieUrl = 'https://api.twitch.tv/kraken/' + prefix + channel + limit + clientID;*/
-    ieRequest(url, channel).then(function(response) {
+    request(url, channel).then(function(response) {
         parse(displayIn, response);
-        /*console.log(response);
-        console.log(displayIn);
-        console.log('interwebs exploder has passed the response back to fetch');*/
     });
 
 
@@ -167,14 +115,16 @@ function removeFromFaves(name) {
 }
 
 function addToFaves(name) {
+    console.log(name + ' in addToFaves function');
     if ($.inArray(name, userChannels) == -1) {
-        userChannels.push(name);
-        var prefix = 'streams/';
-        var displayIn = '.user-cards-container';
-        $('#' + name).fadeOut(300, function() {
+        $('#' + name).fadeOut(150, function() {
             $('#' + name).remove();
         });
-        fetch(displayIn, prefix, name);
+        userChannels.push(name);
+        var url = 'https://api.twitch.tv/kraken/streams/' + name + '/?client_id=a59qej09oftmvj165yc0tnhll3sxps';
+        var displayIn = '.user-cards-container';
+
+        fetch(displayIn, url, name);
         $('#faves-list').append('<li id="fave-' + name + '"><a class="link-' + name + '" href="https://www.twitch.tv/' + name + '">' + name + '</a></li>');
         Cookies.set('PanelFavorites', userChannels);
         sort();
@@ -186,13 +136,13 @@ function addToFaves(name) {
 
 function buildCards(displayIn, path, response) {
     $(displayIn).append([
-        '<div class="user-card" id="' + path.channel.display_name + '">',
-        '  <div class="top-row" id="top-row-' + path.channel.display_name + '"><img src="' + path.preview.large + '" alt="Channel preview picture"></div>',
-        '    <div class="info-row" id="info-row-' + path.channel.display_name + '">',
+        '<div class="user-card" id="' + path.channel.name + '">',
+        '  <div class="top-row" id="top-row-' + path.channel.name + '"><img src="' + path.preview.large + '" alt="Channel preview picture"></div>',
+        '    <div class="info-row" id="info-row-' + path.channel.name + '">',
         '    <i class="fa fa-gamepad fa-lg" aria-hidden="true"></i>',
         '    <div class="game">' + path.game + '</div>',
         '  </div>',
-        '  <div class="middle-row" id="middle-row-' + path.channel.display_name + '">',
+        '  <div class="middle-row" id="middle-row-' + path.channel.name + '">',
         '    <div class="status">' + path.channel.status + '</div>',
         '    <div class="stream-info">',
         '      <ul>',
@@ -203,20 +153,20 @@ function buildCards(displayIn, path, response) {
         '    </div>',
         '   </div>',
         '    <div class="bottom-row">',
-        '      <div id="heart-' + path.channel.display_name + '"><i class="fa fa-heart" aria-hidden="true"></i></div>',
+        '      <div id="heart-' + path.channel.name + '"><i class="fa fa-heart" aria-hidden="true"></i></div>',
         '      <div class="go-channel"><a href="' + path.channel.url + '"><i class="fa fa-twitch" aria-hidden="true"></i>&nbsp;&nbsp;' + path.channel.display_name + '&nbsp;</a></div>',
         '      <div class="player-control">',
-        '        <div id="videoPlay-' + path.channel.display_name + '" class="video-play"><i class="fa fa-play" aria-hidden="true"></i></div>',
-        '        <div id="videoKill-' + path.channel.display_name + '" class="video-kill"><i class="fa fa-stop" aria-hidden="true"></i></div>',
+        '        <div id="videoPlay-' + path.channel.name + '" class="video-play"><i class="fa fa-play" aria-hidden="true"></i></div>',
+        '        <div id="videoKill-' + path.channel.name + '" class="video-kill"><i class="fa fa-stop" aria-hidden="true"></i></div>',
         '      </div>',
         '    </div>',
         '</div>'
     ].join('\n'));
-    $('#' + path.channel.display_name).css({
+    $('#' + path.channel.name).css({
         'display': 'none'
     });
-    $('#' + path.channel.display_name).fadeIn(750);
-    $('#videoKill-' + path.channel.display_name).css({
+    $('#' + path.channel.name).fadeIn(750);
+    $('#videoKill-' + path.channel.name).css({
         'display': 'none'
     });
 
@@ -225,9 +175,8 @@ function buildCards(displayIn, path, response) {
         removeFromFaves(removeName);
     });
 
-    $('#heart-' + path.channel.display_name).click(function() {
+    $('#heart-' + path.channel.name).click(function() {
         var addName = $(this).parent().parent().attr('id');
-
         addToFaves(addName);
         highlightFave(addName);
     });
@@ -236,48 +185,43 @@ function buildCards(displayIn, path, response) {
     /*////////////////////////////////////////
     Embeded video function
     ////////////////////////////////////////*/
-    $('#videoPlay-' + path.channel.display_name).click(function() {
-        console.log('VIDEO PLAY ' + path.channel.display_name);
-        var videoWidth = $('#top-row-' + path.channel.display_name).width();
-        var videoHeight = $('#top-row-' + path.channel.display_name).height();
-        $('#top-row-' + path.channel.display_name).html([
-            '<div id="' + path.channel.display_name + '-user-stream" class="user-stream">',
-            /*'   <iframe src="https://player.twitch.tv/?channel={' + path.channel.name + '}" width="' + videoWidth + '" height="' + videoHeight + '" frameborder="0" scrolling="no" allowfullscreen="true"></iframe>',*/
-            '</div>'
+    $('#videoPlay-' + path.channel.name).click(function() {
+        console.log('VIDEO PLAY ' + path.channel.name);
+        var videoWidth = $('#top-row-' + path.channel.name).width();
+        var videoHeight = $('#top-row-' + path.channel.name).height();
+        $('#top-row-' + path.channel.name).html([
+            '<div id="' + path.channel.name + '-user-stream" class="user-stream"></div>'
         ].join('\n'));
         var options = {
             width: videoWidth,
             height: videoHeight,
-            channel: path.channel.display_name,
+            channel: path.channel.name,
             playsinline: true,
         };
-        console.log(path.channel.display_name + '-user-stream');
-        var player = new Twitch.Player(path.channel.display_name + '-user-stream', options);
+        var player = new Twitch.Player(path.channel.name + '-user-stream', options);
         player.setVolume(0.5);
-
-
 
         $(this).css({
             'display': 'none'
         });
-        $('#videoKill-' + path.channel.display_name).css({
+        $('#videoKill-' + path.channel.name).css({
             'display': 'block'
         });
     });
-    $('#videoKill-' + path.channel.display_name).click(function() {
-        console.log('VIDEO KILL ' + path.channel.display_name);
+    $('#videoKill-' + path.channel.name).click(function() {
+        console.log('VIDEO KILL ' + path.channel.name);
         $('#' + path.channel.thisName + '-user-stream').remove();
-        $('#top-row-' + path.channel.display_name).html([
+        $('#top-row-' + path.channel.name).html([
             '<img src="' + path.preview.large + '" alt="Channel preview picture">',
         ].join('\n'));
         $(this).css({
             'display': 'none'
         });
-        $('#videoPlay-' + path.channel.display_name).css({
+        $('#videoPlay-' + path.channel.name).css({
             'display': 'block'
         });
     });
-    highlightFave(path.channel.display_name);
+    highlightFave(path.channel.name);
 
 }
 /*/ ///////////////////////////////////////
@@ -291,8 +235,8 @@ function parse(displayIn, response) {
     var path;
     if (response.hasOwnProperty('stream') && (response.stream !== null)) {
         path = response.stream;
-        $('.link-' + path.channel.display_name).attr("href", "https://www.twitch.tv/" + path.channel.display_name);
-        $('#fave-' + path.channel.display_name).addClass('a-online');
+        $('.link-' + path.channel.name).attr("href", "https://www.twitch.tv/" + path.channel.name);
+        $('#fave-' + path.channel.name).addClass('a-online');
         buildCards(displayIn, path, response);
         sort();
     } else if (response.hasOwnProperty('stream') && (response.stream === null)) {
@@ -304,26 +248,26 @@ function parse(displayIn, response) {
         sort();
     } else if (response.hasOwnProperty('featured') && (response.featured.length !== 0)) {
         for (var i = 0; i < response.featured.length; i++) {
-            var featIsInIndex = userChannels.indexOf(response.featured[i].stream.channel.display_name);
+            var featIsInIndex = userChannels.indexOf(response.featured[i].stream.channel.name);
             if (featIsInIndex == -1) {
                 path = response.featured[i].stream;
                 buildCards(displayIn, path, response);
             } else {
-                console.log('The Featured channel ' + response.featured[i].stream.channel.display_name + ' is already in Faves so has not been displayed in the featured panel');
+                console.log('The Featured channel ' + response.featured[i].stream.channel.name + ' is already in Faves so has not been displayed in the featured panel');
             }
         }
     } else if (response.hasOwnProperty('streams') && (response.streams.length !== 0)) {
         for (var j = 0; j < response.streams.length; j++) {
-            var searchIsInIndex = userChannels.indexOf(response.streams[j].channel.display_name);
+            var searchIsInIndex = userChannels.indexOf(response.streams[j].channel.name);
             if (searchIsInIndex == -1) {
                 path = response.streams[j];
                 buildCards(displayIn, path, response);
             } else {
-                console.log('The Featured channel ' + response.streams[j].channel.display_name + ' is already in Faves so has not been displayed in the search panel');
+                console.log('The Featured channel ' + response.streams[j].channel.name + ' is already in Faves so has not been displayed in the search panel');
             }
         }
     } else if (response.hasOwnProperty('streams') && (response.streams.length === 0)) {
-        $('#fave-' + response.streams.channel.display_name).addClass('c-not-found');
+        $('#fave-' + response.streams.channel.name).addClass('c-not-found');
     } else {
         buildCards(displayIn, path, response);
     }
@@ -340,6 +284,7 @@ function sort() {
 }
 
 function highlightFave(name) {
+    console.log(name + ' in highlight function');
     if ($.inArray(name, userChannels) != -1) {
         $('#heart-' + name + ' i').css({
             'color': '#6441a4'
