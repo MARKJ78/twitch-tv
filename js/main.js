@@ -1,3 +1,35 @@
+/**
+ * detect IE
+ * returns version of IE or false, if browser is not Internet Explorer
+ * Thanks stack overflow
+ */
+
+function detectIE() {
+    var ua = window.navigator.userAgent;
+    var msie = ua.indexOf('MSIE ');
+    if (msie > 0) {
+        // IE 10 or older => return version number
+        return (ua.substring(msie + 5, ua.indexOf('.', msie)), 10) ;
+    }
+    var trident = ua.indexOf('Trident/');
+    if (trident > 0) {
+        // IE 11 => return version number
+        var rv = ua.indexOf('rv:');
+        return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10) ;
+    }
+    var edge = ua.indexOf('Edge/');
+    if (edge > 0) {
+       // Edge (IE 12+) => return version number
+       return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10) ;
+    }
+    // other browser
+    return  false;
+}
+
+var isIE = detectIE();
+
+//////////////////////////////////////////////////////////////////////////////////////
+
 var userChannels = [];
 if (typeof Cookies('PanelFavorites') === 'undefined') {
     userChannels = ["ShoRyuKen_this", "Bandy_Coot", "Sensible_Socks", "ESL_SC2", "OgamingSC2", "DJTruthsayer", "Crazycanuck1985", "Replicator_", "cretetion", "freecodecamp", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas"];
@@ -11,6 +43,7 @@ if (typeof Cookies('PanelFavorites') === 'undefined') {
 Call API
 ////////////////////////////////////////*/
 function fetch(displayIn, prefix, channel) {
+  if (isIE === false){
     $.ajax({
         type: 'GET',
         url: 'https://api.twitch.tv/kraken/' + prefix + channel,
@@ -26,7 +59,30 @@ function fetch(displayIn, prefix, channel) {
             $('#fave-' + channel).addClass('c-not-found');
         },
     });
+} else {
+  var request = new XMLHttpRequest();
+request.open('GET', 'https://api.twitch.tv/kraken/'  + prefix + channel);
+request.setRequestHeader('Client-ID', 'a59qej09oftmvj165yc0tnhll3sxps');
+request.onload = function() {
+  if (this.status >= 200 && this.status < 400) {
+    console.log('IE SUCCESS!!!');
+    var response = JSON.parse(this.response);
+    parse(displayIn, response);
+  } else {
+    console.log('server reached but Error IE');
+
+  }
+};
+
+request.onerror = function() {
+  console.log('recv Error IE');
+};
+
+request.send();
 }
+}
+
+
 //enter/return key search
 $('#searchTerm').keyup(function(event) {
     var term = $('#searchTerm').val();
@@ -276,3 +332,4 @@ function highlightFave(name) {
     }
 }
 callFaveChannels();
+detectIE();
