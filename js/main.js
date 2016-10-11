@@ -20,35 +20,7 @@ function fetch(displayIn, prefix, channel) {
         success: function(response) {
             /*  console.log(response);
               console.log('response in fetch');*/
-            var path;
-            if (response.hasOwnProperty('stream') && (response.stream !== null)) {
-                path = response.stream;
-                parse(displayIn, path, response);
-            } else if (response.hasOwnProperty('stream') && (response.stream === null)) {
-                parse(displayIn, path, response);
-            } else if (response.hasOwnProperty('featured') && (response.featured.length !== 0)) {
-                for (var i = 0; i < response.featured.length; i++) {
-                    var featIsInIndex = userChannels.indexOf(response.featured[i].stream.channel.display_name);
-                    if (featIsInIndex == -1) {
-                        path = response.featured[i].stream;
-                        parse(displayIn, path, response);
-                    } else {
-                        console.log('The Featured channel ' + response.featured[i].stream.channel.display_name + ' is already in Faves so has not been displayed in the featured panel');
-                    }
-                }
-            } else if (response.hasOwnProperty('streams') && (response.streams.length !== 0)) {
-                for (var j = 0; j < response.streams.length; j++) {
-                    var searchIsInIndex = userChannels.indexOf(response.streams[j].channel.display_name);
-                    if (searchIsInIndex == -1) {
-                        path = response.streams[j];
-                        parse(displayIn, path, response);
-                    } else {
-                        console.log('The Featured channel ' + response.streams[j].channel.display_name + ' is already in Faves so has not been displayed in the search panel');
-                    }
-                }
-            } else if (response.hasOwnProperty('streams') && (response.streams.length === 0)) {
-                alert('Nothing Found for that search');
-            }
+            parse(displayIn, response);
         },
         error: function(error) {
             $('#fave-' + channel).addClass('c-not-found');
@@ -144,7 +116,7 @@ function addToFaves(name) {
 function buildCards(displayIn, path, response) {
     $(displayIn).append([
         '<div class="user-card" id="' + path.channel.display_name + '">',
-        '  <div class="top-row" id="top-row-' + path.channel.display_name + '"><img src="' + path.preview.medium + '" alt="Channel preview picture"></div>',
+        '  <div class="top-row" id="top-row-' + path.channel.display_name + '"><img src="' + path.preview.large + '" alt="Channel preview picture"></div>',
         '    <div class="info-row" id="info-row-' + path.channel.display_name + '">',
         '    <i class="fa fa-gamepad fa-lg" aria-hidden="true"></i>',
         '    <div class="game">' + path.game + '</div>',
@@ -195,11 +167,25 @@ function buildCards(displayIn, path, response) {
     ////////////////////////////////////////*/
     $('#videoPlay-' + path.channel.display_name).click(function() {
         console.log('VIDEO PLAY ' + path.channel.display_name);
+        var videoWidth = $('#top-row-' + path.channel.display_name).width();
+        var videoHeight = $('#top-row-' + path.channel.display_name).height();
         $('#top-row-' + path.channel.display_name).html([
             '<div id="' + path.channel.display_name + '-user-stream" class="user-stream">',
-            '   <iframe src="https://player.twitch.tv/?channel={' + path.channel.display_name + '}" width="320" height="180" frameborder="0" scrolling="no" allowfullscreen="true"></iframe>',
+            /*'   <iframe src="https://player.twitch.tv/?channel={' + path.channel.name + '}" width="' + videoWidth + '" height="' + videoHeight + '" frameborder="0" scrolling="no" allowfullscreen="true"></iframe>',*/
             '</div>'
         ].join('\n'));
+        var options = {
+            width: videoWidth,
+            height: videoHeight,
+            channel: path.channel.display_name,
+            playsinline: true,
+        };
+        console.log(path.channel.display_name + '-user-stream');
+        var player = new Twitch.Player(path.channel.display_name + '-user-stream', options);
+        player.setVolume(0.5);
+
+
+
         $(this).css({
             'display': 'none'
         });
@@ -211,7 +197,7 @@ function buildCards(displayIn, path, response) {
         console.log('VIDEO KILL ' + path.channel.display_name);
         $('#' + path.channel.thisName + '-user-stream').remove();
         $('#top-row-' + path.channel.display_name).html([
-            '<img src="' + path.preview.medium + '" alt="Channel preview picture">',
+            '<img src="' + path.preview.large + '" alt="Channel preview picture">',
         ].join('\n'));
         $(this).css({
             'display': 'none'
@@ -228,11 +214,12 @@ function buildCards(displayIn, path, response) {
 Populate page
 
 ////////////////////////////////////////*/
-function parse(displayIn, path, response) {
-    /*console.log(path);
-    console.log('in parse');*/
-
+function parse(displayIn, response) {
+    console.log(response);
+    /*console.log('in parse');*/
+    var path;
     if (response.hasOwnProperty('stream') && (response.stream !== null)) {
+        path = response.stream;
         $('.link-' + path.channel.display_name).attr("href", "https://www.twitch.tv/" + path.channel.display_name);
         $('#fave-' + path.channel.display_name).addClass('a-online');
         buildCards(displayIn, path, response);
@@ -244,6 +231,28 @@ function parse(displayIn, path, response) {
         $('#fave-' + urlName).addClass('b-offline');
         $('.link-' + urlName).attr("href", "https://www.twitch.tv/" + urlName);
         sort();
+    } else if (response.hasOwnProperty('featured') && (response.featured.length !== 0)) {
+        for (var i = 0; i < response.featured.length; i++) {
+            var featIsInIndex = userChannels.indexOf(response.featured[i].stream.channel.display_name);
+            if (featIsInIndex == -1) {
+                path = response.featured[i].stream;
+                buildCards(displayIn, path, response);
+            } else {
+                console.log('The Featured channel ' + response.featured[i].stream.channel.display_name + ' is already in Faves so has not been displayed in the featured panel');
+            }
+        }
+    } else if (response.hasOwnProperty('streams') && (response.streams.length !== 0)) {
+        for (var j = 0; j < response.streams.length; j++) {
+            var searchIsInIndex = userChannels.indexOf(response.streams[j].channel.display_name);
+            if (searchIsInIndex == -1) {
+                path = response.streams[j];
+                buildCards(displayIn, path, response);
+            } else {
+                console.log('The Featured channel ' + response.streams[j].channel.display_name + ' is already in Faves so has not been displayed in the search panel');
+            }
+        }
+    } else if (response.hasOwnProperty('streams') && (response.streams.length === 0)) {
+        alert('Nothing Found for that search');
     } else {
         buildCards(displayIn, path, response);
     }
