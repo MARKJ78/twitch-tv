@@ -117,8 +117,8 @@ function removeFromFaves(name) {
 function addToFaves(name) {
     console.log(name + ' in addToFaves function');
     if ($.inArray(name, userChannels) == -1) {
-        $('#' + name).fadeOut(150, function() {
-            $('#' + name).remove();
+        $('.featured-container > #' + name).fadeOut(300, function() {
+            $('.featured-container > #' + name).remove();
         });
         userChannels.push(name);
         var url = 'https://api.twitch.tv/kraken/streams/' + name + '/?client_id=a59qej09oftmvj165yc0tnhll3sxps';
