@@ -1,3 +1,12 @@
+var userChannels = [];
+if (typeof Cookies('PanelFavorites') === 'undefined') {
+    userChannels = ["ShoRyuKen_this", "Bandy_Coot", "Sensible_Socks", "ESL_SC2", "OgamingSC2", "DJTruthsayer", "Crazycanuck1985", "Replicator_", "cretetion", "freecodecamp", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas"];
+    Cookies.set('PanelFavorites', userChannels);
+    console.log("Favorites loaded from defaults");
+} else {
+    userChannels = Cookies.getJSON('PanelFavorites');
+    console.log("Favorites loaded from cookies");
+}
 /**
  * detect IE
  * returns version of IE or false, if browser is not Internet Explorer
@@ -28,21 +37,35 @@ function detectIE() {
 
 var isIE = detectIE();
 
+function ieRequest(url) {
+  return new Promise(function(resolve) {
+  var rawData, data;
+  var request = new XMLHttpRequest();
+
+  request.open('GET', url);
+  request.setRequestHeader(
+    "Client-ID",
+    'a59qej09oftmvj165yc0tnhll3sxps'
+  );
+  request.onload = function() {
+      rawData = this.response;
+      response = JSON.parse(this.response);
+      resolve(response);
+};
+
+  request.send();
+});
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////
 
-var userChannels = [];
-if (typeof Cookies('PanelFavorites') === 'undefined') {
-    userChannels = ["ShoRyuKen_this", "Bandy_Coot", "Sensible_Socks", "ESL_SC2", "OgamingSC2", "DJTruthsayer", "Crazycanuck1985", "Replicator_", "cretetion", "freecodecamp", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas"];
-    Cookies.set('PanelFavorites', userChannels);
-    console.log("Favorites loaded from defaults");
-} else {
-    userChannels = Cookies.getJSON('PanelFavorites');
-    console.log("Favorites loaded from cookies");
-}
+
 /*////////////////////////////////////////
 Call API
 ////////////////////////////////////////*/
 function fetch(displayIn, prefix, channel) {
+
   if (isIE === false){
     $.ajax({
         type: 'GET',
@@ -60,27 +83,21 @@ function fetch(displayIn, prefix, channel) {
         },
     });
 } else {
-  var request = new XMLHttpRequest();
-request.open('GET', 'https://api.twitch.tv/kraken/'  + prefix + channel);
-request.setRequestHeader('Client-ID', 'a59qej09oftmvj165yc0tnhll3sxps');
-request.onload = function() {
-  if (this.status >= 200 && this.status < 400) {
-    console.log('IE SUCCESS!!!');
-    var response = JSON.parse(this.response);
+  var clientID = 'a59qej09oftmvj165yc0tnhll3sxps';
+  var ieUrl = 'https://api.twitch.tv/kraken/' + prefix + channel;
+  ieRequest(ieUrl).then(function(response) {
     parse(displayIn, response);
-  } else {
-    console.log('server reached but Error IE');
-
-  }
-};
-
-request.onerror = function() {
-  console.log('recv Error IE');
-};
-
-request.send();
+    console.log(response);
+    console.log(displayIn);
+    console.log('interwebs exploder has passed the response back to fetch');
+});
 }
 }
+
+
+
+
+
 
 
 //enter/return key search
