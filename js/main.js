@@ -1,19 +1,33 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                  //
+//                                                                                                  //
+//                            0.      Global vars                                                   //
+//                                                                                                  //
+//                                                                                                  //
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+console.log('App init'); //test
 var userChannels = [];
-if (typeof Cookies('PanelFavorites') === 'undefined') {
+if (typeof Cookies('PanelFavorites') === 'undefined') { //if there is no cookie, load faves from default array
     userChannels = ["shoryuken_this", "bandy_coot", "sensible_socks", "esl_sc2", "ogamingsc2", "djtruthsayer", "crazycanuck1985", "replicator_", "cretetion", "freecodecamp", "storbeck", "habathcx", "robotcaleb", "noobs2ninjas"];
     Cookies.set('PanelFavorites', userChannels);
     console.log("Favorites loaded from defaults");
-} else {
+} else { //load useras faves from cookie if available.
     userChannels = Cookies.getJSON('PanelFavorites');
     console.log("Favorites loaded from cookies");
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                  //
+//                                                                                                  //
+//                               3.     API Call                                                    //
+//                                                                                                  //
+//                                                                                                  //
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 /*////////////////////////////////////////
-Call API
+API call set up and execute
 ////////////////////////////////////////*/
-
 function request(url, channel) {
     return new Promise(function(resolve) {
         var rawData, data;
@@ -24,117 +38,240 @@ function request(url, channel) {
                 rawData = this.response;
                 response = JSON.parse(this.response);
                 resolve(response);
+                console.log(channel + ' fetch request successful');
+                /*console.log(response);
+                console.log(' in request');*/
             } else {
+                // if result is an error, (single channel only) turn icon red in faves list
                 $('#fave-' + channel).addClass('c-not-found');
+                console.log(channel + ' is no longer with us, please remove the channel from your favorites list.');
             }
         };
         request.send();
     });
 }
 
+
+/*////////////////////////////////////////
+fetch recieves requests from other functions, forwards to request(API CALL) and then sends returned response data to parse
+////////////////////////////////////////*/
 function fetch(displayIn, url, channel) {
+    console.log('fetch ' + channel);
     request(url, channel).then(function(response) {
         parse(displayIn, response);
     });
-
-
 }
 
-//enter/return key search
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                  //
+//                                                                                                  //
+//                 2.    Get Data to populate page and faves list                                   //
+//                                                                                                  //
+//                                                                                                  //
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*////////////////////////////////////////
+Function called to fill twitch featured after faves functions are complete
+////////////////////////////////////////*/
+function callFeaturedChannels() {
+    console.log('Featured Channels called'); //test
+    //setup API call details
+    var displayIn = '.featured-container';
+    var prefix = 'streams/';
+    var channel = 'featured/';
+    var limit = '?limit=5'; //5 results only
+    var url = 'https://api.twitch.tv/kraken/streams/featured?limit=5&client_id=a59qej09oftmvj165yc0tnhll3sxps';
+    //set up container for results
+    $('.cards-panel').append([
+        '<h1 class="section-title">Featured on Twitch.tv</h1>',
+        '<hr/>',
+        '<div class="featured-container" id="featureCards">',
+        '</div>'
+    ].join('\n'));
+    //initiate API call
+    fetch(displayIn, url, channel);
+}
+
+
+function populateFavesList(channel) {
+    //Append each channel from faves list into list as a list item
+    $('#faves-list').append([
+        '<li class="fave" id="fave-' + channel + '">',
+        '<a class="link-' + channel + '" href="#">' + channel + '</a>',
+        '<span class="delete-fave" id="delete-' + channel + '">',
+        '<i class="fa fa-trash-o" aria-hidden="true"></i>',
+        '</span>',
+        '</li>'
+    ].join('\n'));
+    //Delete/bin button setup
+    $('#delete-' + channel).click(function() {
+        var removeName = channel;
+        /*console.log('click on bin');
+        console.log(channel);
+        console.log(removeName);*/
+        removeFromFaves(removeName);
+    });
+}
+
+/*////////////////////////////////////////
+Function called to fill faves on load
+////////////////////////////////////////*/
+function callFaveChannels() {
+    var displayIn = '.user-cards-container';
+    console.log('faveChannels called'); //test
+    $('.cards-panel').append([
+        '<h1 class="section-title">Live Favorites</h1>',
+        '<hr/>',
+        '<div class="user-cards-container" id="userCards">',
+        '</div>'
+    ].join('\n'));
+    //Loop through faves array -  for each user:
+    for (var i = 0; i < userChannels.length; i++) {
+        //set up API call
+        var channel = userChannels[i];
+        var url = 'https://api.twitch.tv/kraken/streams/' + channel + '/?client_id=a59qej09oftmvj165yc0tnhll3sxps';
+        //initiate API call
+        fetch(displayIn, url, channel);
+        //initiate faves list entry
+        populateFavesList(userChannels[i]);
+    }
+    //now go get the Twitch.tv featured channels
+    callFeaturedChannels();
+}
+
+/*////////////////////////////////////////
+Search Twitch.tv function
+////////////////////////////////////////*/
 $('#searchTerm').keyup(function(event) {
+    //setup API call
     var prefix = 'search/streams/?q=';
     var term = $('#searchTerm').val();
     var displayIn = '.search-cards-container';
     var url = 'https://api.twitch.tv/kraken/search/streams/?q=' + term + '&client_id=a59qej09oftmvj165yc0tnhll3sxps';
-    if (event.keyCode == 13) {
+    if (event.keyCode == 13) { //when search term is entered
         if (term !== '') {
+            //clear search box
             var clearThis = "#search-' + term + '";
+            //setup search results containe (for each search)
             $('.cards-panel').prepend([
                 '<div id="search-' + term + '">',
-                '   <h1>Search Results: ' + term + '</h1>',
+                '   <h1 class="section-title">Search Results: ' + term + '</h1>',
                 '   <a href="#" class="btn" id="removeSearch">Clear This Search</a>',
                 '   <hr>',
                 '   <div class="search-cards-container" id="searchCards">',
                 '   </div>',
                 '</div>'
             ].join('\n'));
+            //unhide
             $('.search-cards-container').css({
                 'display': 'flex'
             });
+            //rehide panel on smaller screens
+            if ($(window).width() <= 1024) {
+                $('.channel-panel').addClass('closed');
+                $('.cards-panel').addClass('closed');
+            }
+            //setup remove search button (only clears this search)
             $('#removeSearch').click(function() {
                 $(this).parent().toggle('blind', 750);
             });
-            fetch(displayIn, url);
-            console.log('search entered');
+            //initiate API call
+            fetch(displayIn, url, term);
+            console.log('Searching twitch for ' + term);
         }
     }
 });
-////Function called to fill twitch featured channels on load
-function callFeaturedChannels() {
-    var displayIn = '.featured-container';
-    var prefix = 'streams/';
-    var channel = 'featured/';
-    var limit = '?limit=5';
-    var url = 'https://api.twitch.tv/kraken/streams/featured?limit=5&client_id=a59qej09oftmvj165yc0tnhll3sxps';
-    $('.cards-panel').append([
-        '<h1 class="section-title">Featured on Twitch.tv</h1>',
-        '<hr>',
-        '<div class="featured-container" id="featureCards">',
-        '</div>'
-    ].join('\n'));
-    fetch(displayIn, url, channel);
-}
-////Function called to fill faves on load
-function callFaveChannels() {
-    var prefix = 'streams/';
-    var displayIn = '.user-cards-container';
 
-    $('.cards-panel').append([
-        '<h1 class="section-title">Live Favorites</h1>',
-        '<hr>',
-        '<div class="user-cards-container" id="userCards">',
-        '</div>'
-    ].join('\n'));
-    for (var i = 0; i < userChannels.length; i++) {
-        var channel = userChannels[i];
-        var url = 'https://api.twitch.tv/kraken/streams/' + channel + '/?client_id=a59qej09oftmvj165yc0tnhll3sxps';
-        fetch(displayIn, url, channel);
-        $('#faves-list').append('<li id="fave-' + userChannels[i] + '"><a class="link-' + userChannels[i] + '" href="#">' + userChannels[i] + '</a></li>');
-    }
-    callFeaturedChannels();
-}
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                  //
+//                                                                                                  //
+//                                user modify favorites functions                                   //
+//                                                                                                  //
+//                                                                                                  //
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function removeFromFaves(name) {
-    var i = userChannels.indexOf(name);
-    if (i != -1) {
+
+function removeFromFaves(channel) {
+    var i = userChannels.indexOf(channel);
+    if (i != -1) { //check user is in faves
+        //remove name from array
         userChannels.splice(i, 1);
-        $('#fave-' + name).remove();
         Cookies.set('PanelFavorites', userChannels);
-        console.log(name + " has been removed from Faves");
+        //fadeout remove card and name from list
+        $('#fave-' + channel).fadeOut(100, function() {
+            $('#fave-' + channel).remove();
+        });
+        $('#' + channel).fadeOut(100, function() {
+            $('#' + channel).remove();
+        });
+        //infromation
+        console.log(channel + ' has been removed from Faves');
+        alertUser('<p>' + channel + ' has been successfully removed from your favorites list</p>');
     }
 }
 
 function addToFaves(name) {
-    console.log(name + ' in addToFaves function');
-    if ($.inArray(name, userChannels) == -1) {
-        $('.featured-container > #' + name).fadeOut(300, function() {
+    //  console.log(name + ' in addToFaves function');
+    if ($.inArray(name, userChannels) == -1) { //check not already in faves. Stops player controls not hiding on duplicate cards
+        $('.featured-container > #' + name).fadeOut(100, function() { //remove card from dom
             $('.featured-container > #' + name).remove();
         });
+        $('.search-cards-container > #' + name).fadeOut(100, function() { //remove card from dom
+            $('.search-cards-container > #' + name).remove();
+        });
+        //add to faves array
         userChannels.push(name);
+        Cookies.set('PanelFavorites', userChannels);
+        //Add back into page in faves container
         var url = 'https://api.twitch.tv/kraken/streams/' + name + '/?client_id=a59qej09oftmvj165yc0tnhll3sxps';
         var displayIn = '.user-cards-container';
-
         fetch(displayIn, url, name);
-        $('#faves-list').append('<li id="fave-' + name + '"><a class="link-' + name + '" href="https://www.twitch.tv/' + name + '">' + name + '</a></li>');
-        Cookies.set('PanelFavorites', userChannels);
+        //add to faves list and sort list accordingly
+        populateFavesList(name);
         sort();
+        //infromation
         console.log(name + ' is now a favorite.');
+        alertUser('<p>' + name + ' has been successfully added to your favorites list</p>');
     } else {
-        alert('You already have ' + name + ' as a favorite'); //test
+        alertUser('You already have ' + name + ' as a favorite'); //test
     }
 }
 
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                  //
+//                                                                                                  //
+//                               5.   Build cards and their related functions                       //
+//                                                                                                  //
+//                                                                                                  //
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*////////////////////////////////////////
+Request and display iframe when play is clicked
+////////////////////////////////////////*/
+function makePlayer(channel) {
+    /*var videoWidth = $('#top-row-' + channel).width();
+    var videoHeight = $('#top-row-' + channel).height();*/
+    $('#top-row-' + channel).html([
+        '<div id="' + channel + '-user-stream" class="user-stream"></div>'
+    ].join('\n'));
+    //player
+    var options = {
+        /*width: videoWidth,
+        height: videoHeight,*/ //removed to allow flex
+        channel: channel,
+        playsinline: true,
+    };
+    var player = new Twitch.Player(channel + '-user-stream', options);
+    player.setVolume(0.5);
+    console.log(channel + ' - Video Created');
+}
+
+
 function buildCards(displayIn, path, response) {
+    //build each card
     $(displayIn).append([
         '<div class="user-card" id="' + path.channel.name + '">',
         '  <div class="top-row" id="top-row-' + path.channel.name + '"><img src="' + path.preview.large + '" alt="Channel preview picture"></div>',
@@ -162,115 +299,120 @@ function buildCards(displayIn, path, response) {
         '    </div>',
         '</div>'
     ].join('\n'));
+    /*////////////////////////////////////////
+    Fade cards in
+    ////////////////////////////////////////*/
     $('#' + path.channel.name).css({
         'display': 'none'
     });
     $('#' + path.channel.name).fadeIn(750);
-    $('#videoKill-' + path.channel.name).css({
-        'display': 'none'
-    });
-
-    $('.c-not-found').click(function() {
-        var removeName = $(this).contents().text();
-        removeFromFaves(removeName);
-    });
-
+    /*////////////////////////////////////////
+    Set up faves button
+    ////////////////////////////////////////*/
     $('#heart-' + path.channel.name).click(function() {
         var addName = $(this).parent().parent().attr('id');
         addToFaves(addName);
         highlightFave(addName);
     });
-
-
     /*////////////////////////////////////////
-    Embeded video function
+    Hide stop button under play button
+    ////////////////////////////////////////*/
+    $('#videoKill-' + path.channel.name).css({
+        'display': 'none'
+    });
+    /*////////////////////////////////////////
+    Set up embeded video functionality
     ////////////////////////////////////////*/
     $('#videoPlay-' + path.channel.name).click(function() {
+        makePlayer(path.channel.name);
         console.log('VIDEO PLAY ' + path.channel.name);
-        var videoWidth = $('#top-row-' + path.channel.name).width();
-        var videoHeight = $('#top-row-' + path.channel.name).height();
-        $('#top-row-' + path.channel.name).html([
-            '<div id="' + path.channel.name + '-user-stream" class="user-stream"></div>'
-        ].join('\n'));
-        var options = {
-            width: videoWidth,
-            height: videoHeight,
-            channel: path.channel.name,
-            playsinline: true,
-        };
-        var player = new Twitch.Player(path.channel.name + '-user-stream', options);
-        player.setVolume(0.5);
-
+        //Hide play button
         $(this).css({
             'display': 'none'
         });
+        //present stop button
         $('#videoKill-' + path.channel.name).css({
             'display': 'block'
         });
     });
     $('#videoKill-' + path.channel.name).click(function() {
         console.log('VIDEO KILL ' + path.channel.name);
-        $('#' + path.channel.thisName + '-user-stream').remove();
+        //remove video and display channel preview
+        $('#' + path.channel.name + '-user-stream').remove();
         $('#top-row-' + path.channel.name).html([
             '<img src="' + path.preview.large + '" alt="Channel preview picture">',
         ].join('\n'));
+        //hide stop button
         $(this).css({
             'display': 'none'
         });
+        //present play button
         $('#videoPlay-' + path.channel.name).css({
             'display': 'block'
         });
     });
+
     highlightFave(path.channel.name);
-
+    console.log('Channel card for ' + path.channel.name + ' successfully built');
 }
-/*/ ///////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                  //
+//                                                                                                  //
+//                                4.    Parse Results of API call                                   //
+//                                                                                                  //
+//                                                                                                  //
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Populate page
-
-////////////////////////////////////////*/
 function parse(displayIn, response) {
     /*console.log(response);
     console.log('in parse');*/
+    // path is required because search, featured and favorites all have differing responses
     var path;
-    if (response.hasOwnProperty('stream') && (response.stream !== null)) {
+    if (response.hasOwnProperty('stream') && (response.stream !== null)) { //if channel is online {object}
         path = response.stream;
         $('.link-' + path.channel.name).attr("href", "https://www.twitch.tv/" + path.channel.name);
         $('#fave-' + path.channel.name).addClass('a-online');
+        console.log(path.channel.name + ' is online - card build requested');
         buildCards(displayIn, path, response);
         sort();
-    } else if (response.hasOwnProperty('stream') && (response.stream === null)) {
+    } else if (response.hasOwnProperty('stream') && (response.stream === null)) { //if channel is online {object}
         var channel = response._links.channel;
         var urlArray = channel.split('/');
         var urlName = urlArray[urlArray.length - 1];
         $('#fave-' + urlName).addClass('b-offline');
         $('.link-' + urlName).attr("href", "https://www.twitch.tv/" + urlName);
+        console.log(urlName + ' is offline.');
         sort();
-    } else if (response.hasOwnProperty('featured') && (response.featured.length !== 0)) {
+    } else if (response.hasOwnProperty('featured') && (response.featured.length !== 0)) { //if featured channel [array]
         for (var i = 0; i < response.featured.length; i++) {
             var featIsInIndex = userChannels.indexOf(response.featured[i].stream.channel.name);
             if (featIsInIndex == -1) {
                 path = response.featured[i].stream;
                 buildCards(displayIn, path, response);
+                console.log(path.channel.name + ' is online');
             } else {
+                //stop featured channel appearing if already loaded. Stops player controls not hiding on duplicate cards
                 console.log('The Featured channel ' + response.featured[i].stream.channel.name + ' is already in Faves so has not been displayed in the featured panel');
             }
         }
-    } else if (response.hasOwnProperty('streams') && (response.streams.length !== 0)) {
+    } else if (response.hasOwnProperty('streams') && (response.streams.length !== 0)) { //if searched channel is online [array]
         for (var j = 0; j < response.streams.length; j++) {
             var searchIsInIndex = userChannels.indexOf(response.streams[j].channel.name);
-            if (searchIsInIndex == -1) {
+            if (searchIsInIndex == -1) { //if not already displayed
                 path = response.streams[j];
                 buildCards(displayIn, path, response);
-            } else {
+            } else { //if already displayed.Stops player controls not hiding on duplicate cards
                 console.log('The Featured channel ' + response.streams[j].channel.name + ' is already in Faves so has not been displayed in the search panel');
             }
         }
-    } else if (response.hasOwnProperty('streams') && (response.streams.length === 0)) {
-        $('#fave-' + response.streams.channel.name).addClass('c-not-found');
-    } else {
+    } else if (response.hasOwnProperty('streams') && (response.streams.length === 0)) { // Nothing found in search
+        alertUser('Nothing found for that search, try again');
+        console.log('Nothing found for that search');
+
+    } else { //catch all
         buildCards(displayIn, path, response);
     }
+
 }
 
 /*////////////////////////////////////////
@@ -282,14 +424,79 @@ function sort() {
         $('.c-not-found', this).appendTo(this);
     });
 }
-
+/*////////////////////////////////////////
+Change color of heart/fave if present in faves list
+////////////////////////////////////////*/
 function highlightFave(name) {
-    console.log(name + ' in highlight function');
+    /*  console.log(name + ' in highlight function');*/
     if ($.inArray(name, userChannels) != -1) {
         $('#heart-' + name + ' i').css({
             'color': '#6441a4'
         });
     }
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                  //
+//                                                                                                  //
+//                                   6.  Post populate functions                                    //
+//                                                                                                  //
+//                                                                                                  //
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/*////////////////////////////////////////
+User alerts
+////////////////////////////////////////*/
+
+function alertUser(message) {
+    $('.user-alert').fadeIn(function() {
+        $('.user-alert').html(message);
+    });
+    $('.user-alert').delay(3000).fadeOut(function() {
+        $('.user-alert').css({
+            'display': 'none'
+        });
+        $('.user-alert').html('');
+    });
+}
+
+/*////////////////////////////////////////
+Menu handle function
+////////////////////////////////////////*/
+
+$('#channel-panel-handle i').click(function() {
+    $('.channel-panel').toggleClass('closed');
+    $('.cards-panel').toggleClass('closed');
+});
+
+/*////////////////////////////////////////
+menu panel function
+////////////////////////////////////////*/
+if ($(window).width() > 1024) {
+    $('.channel-panel').removeClass('closed');
+    $('.cards-panel').removeClass('closed');
+} else if ($(window).width() <= 1024) {
+    $('.channel-panel').addClass('closed');
+    $('.cards-panel').addClass('closed');
+}
+
+
+$(window).resize(function() {
+    if ($(window).width() > 1024) {
+        $('.channel-panel').removeClass('closed');
+        $('.cards-panel').removeClass('closed');
+    } else if ($(window).width() <= 1024) {
+        $('.channel-panel').addClass('closed');
+        $('.cards-panel').addClass('closed');
+    }
+});
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                  //
+//                                                                                                  //
+//                                1.  Initialise page loaded                                        //
+//                                                                                                  //
+//                                                                                                  //
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
 callFaveChannels();
-/*detectIE();*/
