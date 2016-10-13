@@ -1,3 +1,6 @@
+@import url(http://fonts.googleapis.com/css?family=Audiowide);
+@import url(http://fonts.googleapis.com/css?family=Roboto);
+@import url(http://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css);
 body, html {
     margin: 0;
     padding: 0;
@@ -45,6 +48,7 @@ a:hover {
 hr {
     border: 0;
     height: 1px;
+    background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0), #6441a4, rgba(0, 0, 0, 0));
     background-image: linear-gradient(to right, rgba(0, 0, 0, 0), #6441a4, rgba(0, 0, 0, 0));
     width: 100%;
 }
@@ -52,10 +56,16 @@ hr {
 .page-container {
     color: #17141f;
     position: absolute;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
     flex-direction: row;
     margin: 0;
     padding: 0;
+    -webkit-transition: margin-left .5s;
     transition: margin-left .5s;
 }
 
@@ -77,10 +87,16 @@ hr {
 .channel-panel {
     position: fixed;
     z-index: 1;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
     flex-direction: column;
     height: 100vh;
     width: 220px;
+    -webkit-transition: 0.5s;
     transition: 0.5s;
     background-color: #17141f;
     color: #898395;
@@ -91,8 +107,14 @@ hr {
 }
 
 #channel-panel-handle {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
     justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
     position: absolute;
     right: -2.3rem;
@@ -128,6 +150,8 @@ hr {
 
 #faves {
     border-bottom: 1px;
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
     flex: 1;
 }
 
@@ -220,8 +244,13 @@ hr {
 }
 
 .search-cards-container, .user-cards-container, .featured-container {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -ms-flex-flow: row wrap;
     flex-flow: row wrap;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
     justify-content: center;
     padding: 0;
     padding-bottom: 2rem;
@@ -230,6 +259,8 @@ hr {
 
 @media all and (min-width: 64rem) {
     .search-cards-container, .user-cards-container, .featured-container {
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
         justify-content: flex-start;
     }
 }
@@ -246,16 +277,28 @@ hr {
 
 .cards-panel {
     position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
     flex-direction: column;
     width: 100%;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
     justify-content: flex-start;
+    -webkit-transition: 0.5s;
     transition: 0.5s;
     margin-top: 3rem;
 }
 
 
-/*////////////////////////        *ie only*/
+/*///ie only*   CAUSES CSS VALIDATION TO FAIL */
+
+.ie-alert {
+    display: none;
+}
 
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
     .user-card {
@@ -263,7 +306,23 @@ hr {
         min-width: 320px;
         max-height: 360px;
     }
+    .ie-alert {
+        display: block;
+        border: 3px solid #6441a4;
+        margin: 1rem;
+        padding: .5rem;
+    }
 }
+
+_:-ms-lang(x), _:-webkit-full-screen, .ie-alert {
+    display: block;
+    border: 3px solid #6441a4;
+    margin: 1rem;
+    padding: .5rem;
+}
+
+
+/*//////////////////////////////////////////////////////////////////*/
 
 .user-card {
     background-color: #fff;
@@ -271,19 +330,26 @@ hr {
     font-size: .8rem;
     margin: 1rem 0;
     max-width: 640px;
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 100%;
     flex: 1 1 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
     flex-direction: column;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     -webkit-transition: max-width .5s linear;
-    -moz-transition: max-width .5s linear;
-    -o-transition: max-width .5s linear;
     transition: max-width .5s linear;
 }
 
 @media all and (min-width: 48.1rem) {
     .user-card {
         margin: .5rem;
+        -webkit-box-flex: .5;
+        -ms-flex: .5 0 20%;
         flex: .5 0 20%;
         max-width: 320px;
     }
@@ -315,7 +381,11 @@ hr {
 
 .info-row {
     background-color: #17141f;
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
     display: inline-flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
     justify-content: center;
     padding: .5rem;
     font-size: 1rem;
@@ -333,14 +403,26 @@ hr {
 }
 
 .middle-row {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
     flex: 1 1 auto;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
     flex-direction: row;
+    -ms-flex-pack: distribute;
     justify-content: space-around;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
 }
 
 .status {
+    -webkit-box-flex: 2;
+    -ms-flex: 2 0;
     flex: 2 0;
     padding: .25rem;
     word-wrap: break-word;
@@ -359,15 +441,23 @@ hr {
 }
 
 .bottom-row {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
     display: inline-flex;
+    -ms-flex-pack: distribute;
     justify-content: space-around;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
     background-color: #17141f;
     padding: .5rem;
 }
 
 .player-control, .go-channel, .fave {
+    -ms-flex-pack: distribute;
     justify-content: space-around;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
     text-align: center;
 }
@@ -409,3 +499,30 @@ iframe {
         flex: 1 1 20%;
     }
 }*/
+
+.bottom-container {
+    list-style: none;
+    padding-left: 0;
+    margin: .5rem;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+}
+
+.bottom-nav {
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+}
+
+.nav-item:hover {
+    cursor: pointer;
+}
+
+.nav-item a {
+    text-decoration: none;
+}

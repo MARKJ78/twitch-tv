@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                                  //
 //                                                                                                  //
-//                            0.      Global vars                                                   //
+//                            0.      Global                                                 //
 //                                                                                                  //
 //                                                                                                  //
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-console.log('App init'); //test
+//console.log('App init'); //test
 var userChannels = [];
 if (typeof Cookies('PanelFavorites') === 'undefined') { //if there is no cookie, load faves from default array
     userChannels = ["shoryuken_this", "bandy_coot", "sensible_socks", "esl_sc2", "ogamingsc2", "djtruthsayer", "crazycanuck1985", "replicator_", "cretetion", "freecodecamp", "storbeck", "habathcx", "robotcaleb", "noobs2ninjas"];
@@ -152,7 +152,7 @@ $('#searchTerm').keyup(function(event) {
         if (term !== '') {
             //clear search box
             var clearThis = "#search-' + term + '";
-            //setup search results containe (for each search)
+            //setup search results container
             $('.cards-panel').prepend([
                 '<div id="search-' + term + '">',
                 '   <h1 class="section-title">Search Results: ' + term + '</h1>',
@@ -166,7 +166,7 @@ $('#searchTerm').keyup(function(event) {
             $('.search-cards-container').css({
                 'display': 'flex'
             });
-            //rehide panel on smaller screens
+            //re-hide panel on smaller screens
             if ($(window).width() <= 1024) {
                 $('.channel-panel').addClass('closed');
                 $('.cards-panel').addClass('closed');
@@ -264,9 +264,20 @@ function makePlayer(channel) {
         channel: channel,
         playsinline: true,
     };
-    var player = new Twitch.Player(channel + '-user-stream', options);
+    var player = new Twitch.Player(channel + '-user-stream', options); //where to put the vid
     player.setVolume(0.5);
     console.log(channel + ' - Video Created');
+
+    //OLD PLAYER
+    /*  $('#top-row-' + channel).html([
+          '<iframe',
+          '  src="http://player.twitch.tv/?channel=' + channel + '"',
+          '  frameborder="0"',
+          '  scrolling="no"',
+          '  allowfullscreen="true">',
+          '</iframe>'
+      ].join('\n'));*/
+
 }
 
 
