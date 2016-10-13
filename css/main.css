@@ -157,8 +157,14 @@ hr {
 
 #faves-list {
     margin-left: 0;
-    height: 60vh;
+    height: 50vh;
     overflow: auto;
+}
+
+@media screen and (min-height: 800px) {
+    #faves-list {
+        height: 75vh;
+    }
 }
 
 #faves-list li {
