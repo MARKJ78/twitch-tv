@@ -150,11 +150,11 @@ $('#searchTerm').keyup(function(event) {
     var url = 'https://api.twitch.tv/kraken/search/streams/?q=' + term + '&client_id=a59qej09oftmvj165yc0tnhll3sxps';
     if (event.keyCode == 13) { //when search term is entered
         if (term !== '') {
-            //clear search box
-            var clearThis = "#search-' + term + '";
+            //clear search results for new results (otherwise cards display in 2 sections/ BUG fixed)
+            $('.search-result').remove();
             //setup search results container
             $('.cards-panel').prepend([
-                '<div id="search-' + term + '">',
+                '<div class="search-result" id="search-' + term + '">',
                 '   <h1 class="section-title">Search Results: ' + term + '</h1>',
                 '   <a href="#" class="btn" id="removeSearch">Clear This Search</a>',
                 '   <hr>',
@@ -171,9 +171,10 @@ $('#searchTerm').keyup(function(event) {
                 $('.channel-panel').addClass('closed');
                 $('.cards-panel').addClass('closed');
             }
-            //setup remove search button (only clears this search)
+            //setup remove search button 
             $('#removeSearch').click(function() {
                 $(this).parent().toggle('blind', 750);
+                $('#searchTerm').val('');
             });
             //initiate API call
             fetch(displayIn, url, term);
