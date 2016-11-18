@@ -171,7 +171,7 @@ $('#searchTerm').keyup(function(event) {
                 $('.channel-panel').addClass('closed');
                 $('.cards-panel').addClass('closed');
             }
-            //setup remove search button 
+            //setup remove search button
             $('#removeSearch').click(function() {
                 $(this).parent().toggle('blind', 750);
                 $('#searchTerm').val('');
@@ -237,9 +237,6 @@ function addToFaves(name) {
         alertUser('You already have ' + name + ' as a favorite'); //test
     }
 }
-
-
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                                  //
