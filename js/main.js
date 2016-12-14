@@ -5,15 +5,15 @@
 //                                                                                                  //
 //                                                                                                  //
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-//console.log('App init'); //test
+////console.log('App init'); //test
 var userChannels = [];
 if (typeof Cookies('PanelFavorites') === 'undefined') { //if there is no cookie, load faves from default array
     userChannels = ["shoryuken_this", "bandy_coot", "sensible_socks", "esl_sc2", "ogamingsc2", "djtruthsayer", "crazycanuck1985", "replicator_", "cretetion", "freecodecamp", "storbeck", "habathcx", "robotcaleb", "noobs2ninjas"];
     Cookies.set('PanelFavorites', userChannels);
-    console.log("Favorites loaded from defaults");
+    //console.log("Favorites loaded from defaults");
 } else { //load useras faves from cookie if available.
     userChannels = Cookies.getJSON('PanelFavorites');
-    console.log("Favorites loaded from cookies");
+    //console.log("Favorites loaded from cookies");
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,13 +38,13 @@ function request(url, channel) {
                 rawData = this.response;
                 response = JSON.parse(this.response);
                 resolve(response);
-                console.log(channel + ' fetch request successful');
-                /*console.log(response);
-                console.log(' in request');*/
+                //console.log(channel + ' fetch request successful');
+                /*//console.log(response);
+                //console.log(' in request');*/
             } else {
                 // if result is an error, (single channel only) turn icon red in faves list
                 $('#fave-' + channel).addClass('c-not-found');
-                console.log(channel + ' is no longer with us, please remove the channel from your favorites list.');
+                //console.log(channel + ' is no longer with us, please remove the channel from your favorites list.');
             }
         };
         request.send();
@@ -56,7 +56,7 @@ function request(url, channel) {
 fetch recieves requests from other functions, forwards to request(API CALL) and then sends returned response data to parse
 ////////////////////////////////////////*/
 function fetch(displayIn, url, channel) {
-    console.log('fetch ' + channel);
+    //console.log('fetch ' + channel);
     request(url, channel).then(function(response) {
         parse(displayIn, response);
     });
@@ -74,7 +74,7 @@ function fetch(displayIn, url, channel) {
 Function called to fill twitch featured after faves functions are complete
 ////////////////////////////////////////*/
 function callFeaturedChannels() {
-    console.log('Featured Channels called'); //test
+    //console.log('Featured Channels called'); //test
     //setup API call details
     var displayIn = '.featured-container';
     var prefix = 'streams/';
@@ -106,9 +106,9 @@ function populateFavesList(channel) {
     //Delete/bin button setup
     $('#delete-' + channel).click(function() {
         var removeName = channel;
-        /*console.log('click on bin');
-        console.log(channel);
-        console.log(removeName);*/
+        /*//console.log('click on bin');
+        //console.log(channel);
+        //console.log(removeName);*/
         removeFromFaves(removeName);
     });
 }
@@ -118,7 +118,7 @@ Function called to fill faves on load
 ////////////////////////////////////////*/
 function callFaveChannels() {
     var displayIn = '.user-cards-container';
-    console.log('faveChannels called'); //test
+    //console.log('faveChannels called'); //test
     $('.cards-panel').append([
         '<h1 class="section-title">Live Favorites</h1>',
         '<hr/>',
@@ -178,7 +178,7 @@ $('#searchTerm').keyup(function(event) {
             });
             //initiate API call
             fetch(displayIn, url, term);
-            console.log('Searching twitch for ' + term);
+            //console.log('Searching twitch for ' + term);
         }
     }
 });
@@ -206,13 +206,13 @@ function removeFromFaves(channel) {
             $('#' + channel).remove();
         });
         //infromation
-        console.log(channel + ' has been removed from Faves');
+        //console.log(channel + ' has been removed from Faves');
         alertUser('<p>' + channel + ' has been successfully removed from your favorites list</p>');
     }
 }
 
 function addToFaves(name) {
-    //  console.log(name + ' in addToFaves function');
+    //  //console.log(name + ' in addToFaves function');
     if ($.inArray(name, userChannels) == -1) { //check not already in faves. Stops player controls not hiding on duplicate cards
         $('.featured-container > #' + name).fadeOut(100, function() { //remove card from dom
             $('.featured-container > #' + name).remove();
@@ -231,7 +231,7 @@ function addToFaves(name) {
         populateFavesList(name);
         sort();
         //infromation
-        console.log(name + ' is now a favorite.');
+        //console.log(name + ' is now a favorite.');
         alertUser('<p>' + name + ' has been successfully added to your favorites list</p>');
     } else {
         alertUser('You already have ' + name + ' as a favorite'); //test
@@ -264,7 +264,7 @@ function makePlayer(channel) {
     };
     var player = new Twitch.Player(channel + '-user-stream', options); //where to put the vid
     player.setVolume(0.5);
-    console.log(channel + ' - Video Created');
+    //console.log(channel + ' - Video Created');
 
     //OLD PLAYER
     /*  $('#top-row-' + channel).html([
@@ -334,7 +334,7 @@ function buildCards(displayIn, path, response) {
     ////////////////////////////////////////*/
     $('#videoPlay-' + path.channel.name).click(function() {
         makePlayer(path.channel.name);
-        console.log('VIDEO PLAY ' + path.channel.name);
+        //console.log('VIDEO PLAY ' + path.channel.name);
         //Hide play button
         $(this).css({
             'display': 'none'
@@ -345,7 +345,7 @@ function buildCards(displayIn, path, response) {
         });
     });
     $('#videoKill-' + path.channel.name).click(function() {
-        console.log('VIDEO KILL ' + path.channel.name);
+        //console.log('VIDEO KILL ' + path.channel.name);
         //remove video and display channel preview
         $('#' + path.channel.name + '-user-stream').remove();
         $('#top-row-' + path.channel.name).html([
@@ -362,7 +362,7 @@ function buildCards(displayIn, path, response) {
     });
 
     highlightFave(path.channel.name);
-    console.log('Channel card for ' + path.channel.name + ' successfully built');
+    //console.log('Channel card for ' + path.channel.name + ' successfully built');
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                                  //
@@ -373,24 +373,24 @@ function buildCards(displayIn, path, response) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function parse(displayIn, response) {
-    /*console.log(response);
-    console.log('in parse');*/
+    /*//console.log(response);
+    //console.log('in parse');*/
     // path is required because search, featured and favorites all have differing responses
     var path;
     if (response.hasOwnProperty('stream') && (response.stream !== null)) { //if channel is online {object}
         path = response.stream;
         $('.link-' + path.channel.name).attr("href", "https://www.twitch.tv/" + path.channel.name);
         $('#fave-' + path.channel.name).addClass('a-online');
-        console.log(path.channel.name + ' is online - card build requested');
+        //console.log(path.channel.name + ' is online - card build requested');
         buildCards(displayIn, path, response);
         sort();
-    } else if (response.hasOwnProperty('stream') && (response.stream === null)) { //if channel is online {object}
+    } else if (response.hasOwnProperty('stream') && (response.stream === null)) { //if channel is offline {object}
         var channel = response._links.channel;
         var urlArray = channel.split('/');
         var urlName = urlArray[urlArray.length - 1];
         $('#fave-' + urlName).addClass('b-offline');
         $('.link-' + urlName).attr("href", "https://www.twitch.tv/" + urlName);
-        console.log(urlName + ' is offline.');
+        //console.log(urlName + ' is offline.');
         sort();
     } else if (response.hasOwnProperty('featured') && (response.featured.length !== 0)) { //if featured channel [array]
         for (var i = 0; i < response.featured.length; i++) {
@@ -398,10 +398,10 @@ function parse(displayIn, response) {
             if (featIsInIndex == -1) {
                 path = response.featured[i].stream;
                 buildCards(displayIn, path, response);
-                console.log(path.channel.name + ' is online');
+                //console.log(path.channel.name + ' is online');
             } else {
                 //stop featured channel appearing if already loaded. Stops player controls not hiding on duplicate cards
-                console.log('The Featured channel ' + response.featured[i].stream.channel.name + ' is already in Faves so has not been displayed in the featured panel');
+                //console.log('The Featured channel ' + response.featured[i].stream.channel.name + ' is already in Faves so has not been displayed in the featured panel');
             }
         }
     } else if (response.hasOwnProperty('streams') && (response.streams.length !== 0)) { //if searched channel is online [array]
@@ -411,12 +411,12 @@ function parse(displayIn, response) {
                 path = response.streams[j];
                 buildCards(displayIn, path, response);
             } else { //if already displayed.Stops player controls not hiding on duplicate cards
-                console.log('The Featured channel ' + response.streams[j].channel.name + ' is already in Faves so has not been displayed in the search panel');
+                //console.log('The Featured channel ' + response.streams[j].channel.name + ' is already in Faves so has not been displayed in the search panel');
             }
         }
     } else if (response.hasOwnProperty('streams') && (response.streams.length === 0)) { // Nothing found in search
         alertUser('Nothing found for that search, try again');
-        console.log('Nothing found for that search');
+        //console.log('Nothing found for that search');
 
     } else { //catch all
         buildCards(displayIn, path, response);
@@ -437,7 +437,7 @@ function sort() {
 Change color of heart/fave if present in faves list
 ////////////////////////////////////////*/
 function highlightFave(name) {
-    /*  console.log(name + ' in highlight function');*/
+    /*  //console.log(name + ' in highlight function');*/
     if ($.inArray(name, userChannels) != -1) {
         $('#heart-' + name + ' i').css({
             'color': '#6441a4'
